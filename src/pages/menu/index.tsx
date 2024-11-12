@@ -1,3 +1,8 @@
+import { Header } from "../../components/header";
+
 export function Menu(){
-    return <></>;
+    console.log('AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA');
+    return <>
+    <Header />
+    </>;
 }
