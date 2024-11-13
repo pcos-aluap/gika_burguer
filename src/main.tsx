@@ -18,16 +18,11 @@ const router = createBrowserRouter([
   }
 ])
 
-// enableMSW().then(() => {
-//   createRoot(document.getElementById('root')!).render(
-//     <StrictMode>
-//       <RouterProvider router={router} />
-//     </StrictMode>,
-//   )
-// })
+enableMSW().then(() => {
+  createRoot(document.getElementById('root')!).render(
+    <StrictMode>
+      <RouterProvider router={router} />
+    </StrictMode>,
+  )
+})
 
-createRoot(document.getElementById('root')!).render(
-  <StrictMode>
-    <RouterProvider router={router} />
-  </StrictMode>,
-)
