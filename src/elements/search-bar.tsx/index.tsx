@@ -1,19 +1,19 @@
-import { MagnifyingGlass, X } from "@phosphor-icons/react";
-import { ChangeEvent, useContext, useState } from "react";
-import styled from "styled-components";
-//import { MenuContext } from "../../../contexts/menu-provider";
+import { MagnifyingGlass, X } from "@phosphor-icons/react"
+import { ChangeEvent, useState } from "react"
+import styled from "styled-components"
+import { useMenu } from "../../hooks/useMenu"
 
-type SearchBarComponentProps = {
-    handleCloseSearchBarComponent: () => void;
-};
+interface SearchBarComponentProps {
+    handleCloseSearchBarComponent: () => void
+}
 
 export function SearchBarComponent({ handleCloseSearchBarComponent }: SearchBarComponentProps) {
-    //const { filterMenuItemsForSearch } = useContext(MenuContext);
-    const [searchedName, setSearchedName] = useState('');
+    const { filterMenuItemsForSearch } = useMenu()
+    const [searchedName, setSearchedName] = useState('')
 
     function handleSearchInput(e: ChangeEvent<HTMLInputElement>) {
-        setSearchedName(e.target.value);
-        //filterMenuItemsForSearch(e.target.value);
+        setSearchedName(e.target.value)
+        filterMenuItemsForSearch(e.target.value)
     }
     
     return (
@@ -24,9 +24,9 @@ export function SearchBarComponent({ handleCloseSearchBarComponent }: SearchBarC
                 placeholder="Buscar por item"
                 value={searchedName}
                 onChange={handleSearchInput} />
-            <button><X size={16} onClick={handleCloseSearchBarComponent}/></button>
+            <button data-testid='close-search-button' onClick={handleCloseSearchBarComponent}><X size={16} /></button>
         </Container>
-    );
+    )
 }
 
 const Container = styled.form`
@@ -55,7 +55,7 @@ const Container = styled.form`
 
         outline: none;
     }
-`;
+`
 
 const SearchBar = styled.input`
     width: 70%;
@@ -71,4 +71,4 @@ const SearchBar = styled.input`
 
         font-family: "Mukta Vaani", sans-serif;
     }
-`;
+`

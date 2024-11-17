@@ -1,65 +1,65 @@
-import { createContext, ReactNode, useEffect, useState } from "react";
-import { MenuCategory } from "../@types/menu";
-import { MenuItem } from "../@types/menu";
+import { createContext, ReactNode, useEffect, useState } from "react"
+import { MenuCategory } from "../@types/menu"
+import { MenuItem } from "../@types/menu"
 
 interface MenuContextType {
-    menu: MenuCategory[];
-    filteredMenuItems: MenuItem[];
-    isSearching: boolean;
-    addMenu: (data: MenuCategory[]) => void;
-    filterMenuItemsForSearch: (searchTerm: string) => void;
-    buildFilteredMenuItems: () => void;
-    closeSearch: () => void;
+    menu: MenuCategory[]
+    filteredMenuItems: MenuItem[]
+    isSearching: boolean
+    addMenu: (data: MenuCategory[]) => void
+    filterMenuItemsForSearch: (searchTerm: string) => void
+    buildFilteredMenuItems: () => void
+    closeSearch: () => void
 }
 
 interface MenuContextProviderProps {
-    children: ReactNode;
+    children: ReactNode
 }
 
-export const MenuContext = createContext({} as MenuContextType);
+export const MenuContext = createContext({} as MenuContextType)
 
 export function MenuContextProvider({ children }: MenuContextProviderProps){
-    const [menu, setMenu] = useState<MenuCategory[]>([]);
-    const [menuItems, setMenuItems] = useState<MenuItem[]>([]);
-    const [filteredMenuItems, setFilteredMenuItems] = useState<MenuItem[]>([]);
-    const [isSearching, setIsSearching] = useState(false);
+    const [menu, setMenu] = useState<MenuCategory[]>([])
+    const [menuItems, setMenuItems] = useState<MenuItem[]>([])
+    const [filteredMenuItems, setFilteredMenuItems] = useState<MenuItem[]>([])
+    const [isSearching, setIsSearching] = useState(false)
 
     function addMenu(data: MenuCategory[]) {
-        setMenu(data);
+        setMenu(data)
     }
 
     function buildFilteredMenuItems(){
-        let menuItemsAux: MenuItem[] = [];
+        let menuItemsAux: MenuItem[] = []
 
         menu.forEach(category => {
-            menuItemsAux = [...menuItemsAux, ...category.items];
+            menuItemsAux = [...menuItemsAux, ...category.items]
         })
 
-        setMenuItems(menuItems);
+        setMenuItems(menuItems)
     }
 
     function filterMenuItemsForSearch(searchTerm: string){
         if(searchTerm === ''){
-            setFilteredMenuItems([]);
-            setIsSearching(false);
+            setFilteredMenuItems([])
+            setIsSearching(false)
         }
         else{
             if(!isSearching){
-                setIsSearching(true);
+                setIsSearching(true)
             }
             setFilteredMenuItems(menuItems.filter((menuItem) => 
                 menuItem.name.toLocaleLowerCase().includes(searchTerm.toLowerCase())
-            ));
+            ))
         }
     }
 
     function closeSearch(){
-        setIsSearching(false);
+        setIsSearching(false)
     }
 
     useEffect(() => {
         buildFilteredMenuItems()
-    }, [menu]);
+    }, [menu])
 
     return (
         <MenuContext.Provider
@@ -75,5 +75,5 @@ export function MenuContextProvider({ children }: MenuContextProviderProps){
         >
             {children}
         </MenuContext.Provider>
-    );
+    )
 }
