@@ -11,7 +11,7 @@ interface DetailsModalContextProviderProps {
     children: ReactNode
 }
 
-export const DetailsModalContext = createContext({} as DetailsModalContextType);
+export const DetailsModalContext = createContext({} as DetailsModalContextType)
 
 export function DetailsModalContextProvider({ children }: DetailsModalContextProviderProps) {
     const [isModalOpen, setIsModalOpen] = useState<boolean>(false)
