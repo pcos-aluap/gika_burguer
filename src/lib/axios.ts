@@ -1,6 +1,7 @@
 import axios from 'axios'
 
-const baseUrl = import.meta.env.VITE_BASE_URL as string;
+//const baseUrl = import.meta.env.VITE_BASE_URL as string;
+const baseUrl = 'http://localhost:5173'
 
 console.log(baseUrl);
 

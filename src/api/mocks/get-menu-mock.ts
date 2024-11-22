@@ -1,17 +1,18 @@
 import { http, HttpResponse } from 'msw'
 import { MenuItem } from '../../@types/menu'
 
-type CategoryFromAPI = {
+interface CategoryFromAPI {
     id: number;
     name: string;
     menuItemDTOList: MenuItem[];
 };
 
-type MenuFromAPI = {
+interface MenuFromAPI {
     categoryDTOList: CategoryFromAPI[];
 };
 
-export const getMenu = http.get<never, never, MenuFromAPI>('/menu', () => {
+export const getMenuMock = http.get<never, never, MenuFromAPI>('/menu', () => {
+    console.log('BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB')
     return HttpResponse.json({
         categoryDTOList: [
             {

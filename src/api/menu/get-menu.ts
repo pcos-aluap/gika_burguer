@@ -15,11 +15,14 @@ interface MenuFromAPI {
 export async function getMenu(): Promise<MenuCategory[]>{
     const response = await api.get<MenuFromAPI>("/menu");
 
+    console.log('CCCCCCCCCCCCCCCCCCCCCCCCCCCCC')
+    console.log(response.request)
+
     const categories = response.data.categoryDTOList.map(item => ({
         id: item.id,
         name: item.name,
         items: item.menuItemDTOList
-    }));
+    }))
 
     return categories;
 }

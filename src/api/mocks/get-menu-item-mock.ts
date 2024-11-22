@@ -5,7 +5,7 @@ interface GetMenuItemProps {
     menuItemId: string
 }
 
-export const getMenuItem = http.get<GetMenuItemProps, never, MenuItem>('/menu/:menuItemId', ({params}) => {
+export const getMenuItemMock = http.get<GetMenuItemProps, never, MenuItem>('/menu/:menuItemId', ({params}) => {
     const { menuItemId } = params
 
     return HttpResponse.json({

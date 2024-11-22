@@ -1,38 +1,39 @@
 import styled from "styled-components";
 import aa from "../../../assets/hamburguer.jpeg"
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { QuantityInput } from "../../../elements/quantity-input";
 import { ModalsAddButtonToCartButton } from "../../../elements/modals-add-to-cart-button";
 import { PriceFormater } from "../../../utils/price-formater";
 import { CaretLeft, Heart, X } from "@phosphor-icons/react";
 import { useMediaQuery } from 'react-responsive';
 import { useQuery } from "@tanstack/react-query";
-import { DetailsModalContext } from "../../../contexts/details-modal-provider";
 import { getDetailsMenuItem } from "../../../api/menu/get-menu";
 import { useCart } from "../../../hooks/useCart";
+import { useDetailsModal } from "../../../hooks/useDetailsModal";
+
 
 export function DetailsModal() {
-    const { closeModal, isModalOpen, menuItemId } = useContext(DetailsModalContext);
-    const { addOrUpdateItem } = useCart();
+    const { closeModal, isModalOpen, menuItemId } = useDetailsModal()
+    const { addOrUpdateItem } = useCart()
 
-    const [quantityOfItems, setQuantityOfIems] = useState<number>(1);
+    const [quantityOfItems, setQuantityOfIems] = useState<number>(1)
 
-    const isTabletOrMobile = useMediaQuery({ query: '(max-width: 768px)' });
+    const isTabletOrMobile = useMediaQuery({ query: '(max-width: 768px)' })
 
     const { data, isLoading, isError } = useQuery({
         queryKey: ["getMenuItem", menuItemId],
         queryFn: () => getDetailsMenuItem(menuItemId!)
     })
 
-    const [totalCost, setTotalCost] = useState(data != null ? data!.cost : 0);
+    const [totalCost, setTotalCost] = useState(data != null ? data!.cost : 0)
 
     function alterTotalCost() {
         if (data != null)
-            setTotalCost(data!.cost * quantityOfItems);
+            setTotalCost(data!.cost * quantityOfItems)
     }
 
     function incrementQuantityOfItems() {
-        setQuantityOfIems(state => state += 1);
+        setQuantityOfIems(state => state += 1)
     }
 
     function decrementQuantityOfItems() {
@@ -92,7 +93,7 @@ export function DetailsModal() {
                         </FormContainer>
                     </Body>
                 </Container>
-            );
+            )
         }
 
         return (
@@ -123,13 +124,13 @@ export function DetailsModal() {
                     </InformationsContainer>
                 </ModalContainer>
             </Background>
-        );
+        )
 
     }
 
     return (
         <></>
-    );
+    )
 
 }
 
@@ -144,6 +145,8 @@ const Background = styled.div`
     justify-content: center;
 
     background-color: rgba(0, 0, 0, 0.8);
+
+    z-index: 5;
 `
 
 const ModalContainer = styled.div`
@@ -194,9 +197,13 @@ const Name = styled.div`
 `
 
 const Description = styled.p`
+    display: inline-block;
+
     font-family: "Mukta Vaani", sans-serif;
     font-size: 0.875rem;
     color: ${(props) => props.theme["base-text"]};
+
+    margin-top: 2rem;
 `
 
 interface AvailabilityProps {
@@ -210,6 +217,8 @@ const Price = styled.p<AvailabilityProps>`
     text-align: right;
 
     align-self: self-end;
+
+    margin-bottom: auto;
 
     span {
         font-size: 1.5rem;
@@ -240,7 +249,7 @@ const FormContainer = styled.div`
     display: grid;
     grid-template-columns: 7rem 1fr;
 
-    margin-top: auto;
+    margin-top: 2rem;
 
     gap: 1rem;
 
