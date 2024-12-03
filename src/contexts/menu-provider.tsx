@@ -35,7 +35,7 @@ export function MenuContextProvider({ children }: MenuContextProviderProps){
             menuItemsAux = [...menuItemsAux, ...category.items]
         })
 
-        setMenuItems(menuItems)
+        setMenuItems(menuItemsAux)
     }
 
     function filterMenuItemsForSearch(searchTerm: string){
