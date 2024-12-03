@@ -3,7 +3,7 @@ import { AddToCartContainer, Description, FormContainer, Grid, Name, Price } fro
 import { useEffect, useState } from "react"
 import { useCart } from "../../hooks/useCart"
 import { useDetailsModal } from "../../hooks/useDetailsModal"
-import { CardsAddToCartButton } from "./card-add-to-cart-button"
+import { CardsAddToCartButton } from "./components/card-add-to-cart-button"
 import { QuantityInput } from "../../elements/quantity-input"
 import { PriceFormater } from "../../utils/price-formater"
 import { ShowAddToCartFormButton } from "../../elements/add-to-cart-button"

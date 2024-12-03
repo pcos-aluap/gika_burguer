@@ -6,6 +6,7 @@ import logo from "../../assets/logo-gika-burguer.jpg"
 import { SearchBarComponent } from '../../elements/search-bar.tsx/index.tsx'
 import { Container, ContainerHeaderTop, LinkMenuIconButton, LinksList, Nav, NavBarLink, SearchBar, SearchBarContainer, UsersMenuContainer, UsersMenuIconButton } from './styles.ts'
 import { useMenu } from '../../hooks/useMenu.tsx'
+import { HeaderNavSkeleton } from './components/hearder-nav-skeleton.tsx'
 
 interface HeaderLink {
     id: number;
@@ -72,7 +73,9 @@ export function Header() {
             <Nav>
                 <LinksList>
                     {
-                        headersLinks.map(link => <li key={link.id}><NavBarLink to={`#${link.id}`} end>{link.name}</NavBarLink></li>)
+                        headersLinks.length > 0 ?
+                        headersLinks.map(link => <li key={link.id}><NavBarLink to={`#${link.id}`} end>{link.name}</NavBarLink></li>) :
+                        <HeaderNavSkeleton />
                     }
 
                 </LinksList>
