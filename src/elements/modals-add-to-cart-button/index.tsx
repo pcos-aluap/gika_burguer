@@ -4,12 +4,16 @@ import { PriceFormater } from "../../utils/price-formater"
 interface ModalsAddButtonToCartButtonProps {
     value: number
     availability: boolean
-    onClick: () => void
 }
 
-export function ModalsAddButtonToCartButton({ value, availability, onClick }: ModalsAddButtonToCartButtonProps) {
+export function ModalsAddToCartButton({ value, availability }: ModalsAddButtonToCartButtonProps) {
     return (
-        <Container type="button" onClick={onClick} availabiliy={availability} disabled={!availability}>
+        <Container 
+            type="submit" 
+            availabiliy={availability} 
+            disabled={!availability}
+            data-testid='modals-add-to-cart-button'
+        >
             Adicionar <span>R$ {PriceFormater(value)}</span>
         </Container>
     )

@@ -2,7 +2,7 @@ import styled from "styled-components";
 import aa from "../../../assets/hamburguer.jpeg"
 import { useEffect, useState } from "react";
 import { QuantityInput } from "../../../elements/quantity-input";
-import { ModalsAddButtonToCartButton } from "../../../elements/modals-add-to-cart-button";
+import { ModalsAddToCartButton } from "../../../elements/modals-add-to-cart-button";
 import { PriceFormater } from "../../../utils/price-formater";
 import { CaretLeft, Heart, X } from "@phosphor-icons/react";
 import { useMediaQuery } from 'react-responsive';
@@ -10,9 +10,21 @@ import { useQuery } from "@tanstack/react-query";
 import { getDetailsMenuItem } from "../../../api/menu/get-menu";
 import { useCart } from "../../../hooks/useCart";
 import { useDetailsModal } from "../../../hooks/useDetailsModal";
+import { z } from 'zod'
+import { SubmitHandler, useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 
+const addItemToCart = z.object({
+    foodPreferencies: z.string()
+})
+
+export type addItemToCartInfo = z.infer<typeof addItemToCart>
 
 export function DetailsModal() {
+    const { register, handleSubmit } = useForm<addItemToCartInfo>({
+        resolver: zodResolver(addItemToCart)
+    })
+
     const { closeModal, isModalOpen, menuItemId } = useDetailsModal()
     const { addOrUpdateItem } = useCart()
 
@@ -26,6 +38,7 @@ export function DetailsModal() {
     })
 
     const [totalCost, setTotalCost] = useState(data != null ? data!.cost : 0)
+
 
     function alterTotalCost() {
         if (data != null)
@@ -42,7 +55,7 @@ export function DetailsModal() {
         }
     }
 
-    function addProductToCart() {
+    const handleAddProductToCart: SubmitHandler<addItemToCartInfo> = (formData) => {
         addOrUpdateItem({
             menuItem: {
                 id: data!.id,
@@ -52,8 +65,11 @@ export function DetailsModal() {
                 cost: data!.cost,
                 available: data!.available
             },
+            foodPreferencies: formData.foodPreferencies,
             quantity: quantityOfItems
         })
+
+        closeModal()
     }
 
     useEffect(() => {
@@ -80,17 +96,29 @@ export function DetailsModal() {
                         <MobileImage src={aa} alt="" />
                     </div>
                     <Body>
-                        <div>
-                            <Name>{data!.name}</Name>
-                            <Description>{data!.description}</Description>
-                            <Price availability={data!.available}>R$ <span>{PriceFormater(data!.cost)}</span></Price>
-                            <Label>Deseja adicionar alguma observação?</Label>
-                            <Input placeholder="Deseja alguma alteração no prato?" />
-                        </div>
-                        <FormContainer>
-                            <QuantityInput quantity={quantityOfItems} incrementQuantity={incrementQuantityOfItems} decrementQuantity={decrementQuantityOfItems} />
-                            <ModalsAddButtonToCartButton onClick={addProductToCart} availability={data!.available} value={totalCost} />
-                        </FormContainer>
+                        <form id="addItemToCart" onSubmit={handleSubmit(handleAddProductToCart)}>
+                            <div>
+                                <Name>{data!.name}</Name>
+                                <Description>{data!.description}</Description>
+                                <Price availability={data!.available}>R$ <span>{PriceFormater(data!.cost)}</span></Price>
+                                <Label>Deseja adicionar alguma observação?</Label>
+                                <Input
+                                    placeholder="Deseja alguma alteração no prato?"
+                                    {...register('foodPreferencies')}
+                                />
+                            </div>
+                            <FormContainer>
+                                <QuantityInput
+                                    quantity={quantityOfItems}
+                                    incrementQuantity={incrementQuantityOfItems}
+                                    decrementQuantity={decrementQuantityOfItems}
+                                />
+                                <ModalsAddToCartButton
+                                    availability={data!.available}
+                                    value={totalCost}
+                                />
+                            </FormContainer>
+                        </form>
                     </Body>
                 </Container>
             )
@@ -105,17 +133,19 @@ export function DetailsModal() {
                         <Name>{data!.name}</Name>
                         <Description>{data!.description}</Description>
                         <Price availability={data!.available} >R$ <span>{PriceFormater(data!.cost)}</span></Price>
-                        <form >
+                        <form id="addItemToCart" onSubmit={handleSubmit(handleAddProductToCart)}>
                             <Label>Deseja adicionar alguma observação?</Label>
-                            <Input />
+                            <Input
+                                placeholder="Deseja alguma alteração no prato?"
+                                {...register('foodPreferencies')}
+                            />
                             <FormContainer>
                                 <QuantityInput
                                     quantity={quantityOfItems}
                                     incrementQuantity={incrementQuantityOfItems}
                                     decrementQuantity={decrementQuantityOfItems}
                                 />
-                                <ModalsAddButtonToCartButton
-                                    onClick={addProductToCart}
+                                <ModalsAddToCartButton
                                     availability={data!.available}
                                     value={totalCost}
                                 />

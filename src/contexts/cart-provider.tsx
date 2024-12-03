@@ -19,6 +19,8 @@ export function CartContextProvider({ children }: CartContextProviderProps){
     const [cartState, dispatch] = useReducer(cartReducer, []);
 
     function addOrUpdateItem(cartItem: CartItem) {
+        console.log('AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA')
+        console.log(cartItem)
         dispatch(addOrUpdateItemAction(cartItem));
     }
 

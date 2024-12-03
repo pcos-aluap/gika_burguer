@@ -1,6 +1,6 @@
 import aa from "../../assets/hamburguer.jpeg"
 import { AddToCartContainer, Description, FormContainer, Grid, Name, Price } from "./styles"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { useCart } from "../../hooks/useCart"
 import { useDetailsModal } from "../../hooks/useDetailsModal"
 import { CardsAddToCartButton } from "./card-add-to-cart-button"
@@ -20,10 +20,20 @@ interface MenuItemCardProps {
 
 export function MenuCard({ name, description, price, available, id }: MenuItemCardProps) {
     const { openModal } = useDetailsModal()
-    const { addOrUpdateItem } = useCart()
+    const { addOrUpdateItem, cartState } = useCart()
 
     const [quantityOfItems, setQuantityOfIems] = useState<number>(0)
     const [isFormVisible, setIsFormVisible] = useState(false)
+
+    const [addToCartButtonHasBeenClicked, setAddToCartButtonHasBeenClicked] = useState(false)
+
+    function updateQuantityAccordingWithCart() {
+        const cartItem = cartState.find(item => item.menuItem.id === id)
+        if (cartItem) {
+            setQuantityOfIems(cartItem.quantity)
+            setIsFormVisible(true)
+        }
+    }
 
     function handleOpenDetails() {
         openModal(id)
@@ -46,7 +56,7 @@ export function MenuCard({ name, description, price, available, id }: MenuItemCa
         }
     }
 
-    function addItemTocart(){
+    function addItemTocart() {
         addOrUpdateItem({
             menuItem: {
                 id: id,
@@ -56,9 +66,16 @@ export function MenuCard({ name, description, price, available, id }: MenuItemCa
                 cost: price,
                 available: available
             },
-            quantity: quantityOfItems
+            quantity: quantityOfItems,
+            foodPreferencies: ''
         })
+
+        setAddToCartButtonHasBeenClicked(true)
     }
+
+    useEffect(() => {
+        updateQuantityAccordingWithCart()
+    }, [])
 
     return (
         <Grid availability={available} onClick={handleOpenDetails}>
@@ -75,7 +92,7 @@ export function MenuCard({ name, description, price, available, id }: MenuItemCa
                                 incrementQuantity={incrementQuantityOfItems}
                                 decrementQuantity={decrementQuantityOfItems}
                             />
-                            <CardsAddToCartButton addToCart={addItemTocart} />
+                            <CardsAddToCartButton addToCart={addItemTocart} hasBeenClicked={addToCartButtonHasBeenClicked} />
                         </FormContainer>
                     ) :
                     (

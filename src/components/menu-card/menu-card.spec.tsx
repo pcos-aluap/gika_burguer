@@ -167,6 +167,7 @@ describe('MenuCard', () => {
                 available: menuItemMock.available,
             },
             quantity: 1,
+            foodPreferencies: '',
         })
     })
 

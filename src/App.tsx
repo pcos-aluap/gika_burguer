@@ -6,17 +6,20 @@ import { MenuContextProvider } from "./contexts/menu-provider"
 import { QueryClientProvider } from "@tanstack/react-query"
 import { queryClient } from "./lib/react-query"
 import { DetailsModalContextProvider } from "./contexts/details-modal-provider"
+import { CartContextProvider } from "./contexts/cart-provider"
 
 export default function App() {
     return (
         <ThemeProvider theme={defaultTheme}>
             <QueryClientProvider client={queryClient}>
-                <MenuContextProvider>
-                    <DetailsModalContextProvider>
-                        <GlobalStyle />
-                        <Outlet />
-                    </DetailsModalContextProvider>
-                </MenuContextProvider>
+                <CartContextProvider>
+                    <MenuContextProvider>
+                        <DetailsModalContextProvider>
+                            <GlobalStyle />
+                            <Outlet />
+                        </DetailsModalContextProvider>
+                    </MenuContextProvider>
+                </CartContextProvider>
             </QueryClientProvider>
         </ThemeProvider>
     )

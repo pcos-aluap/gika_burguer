@@ -1,9 +1,9 @@
-
 import { MenuItem } from "../../@types/menu"
 import { Actions, ActionTypes } from "./actions"
 
 export interface CartItem {
     menuItem: MenuItem
+    foodPreferencies: string
     quantity: number
 }
 

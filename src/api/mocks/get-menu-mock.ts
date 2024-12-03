@@ -12,7 +12,6 @@ interface MenuFromAPI {
 };
 
 export const getMenuMock = http.get<never, never, MenuFromAPI>('/menu', () => {
-    console.log('BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB')
     return HttpResponse.json({
         categoryDTOList: [
             {

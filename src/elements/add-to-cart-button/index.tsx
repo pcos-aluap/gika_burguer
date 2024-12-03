@@ -12,7 +12,12 @@ export function ShowAddToCartFormButton({ availability, showForm }: QuantityInpu
     }
 
     return (
-        <AddItemToCartButon type="button" available={availability} disabled={!availability} onClick={handleShowForm}>
+        <AddItemToCartButon
+            type="button"
+            available={availability}
+            disabled={!availability}
+            onClick={handleShowForm}
+        >
             adicionar ao carrinho
         </AddItemToCartButon>
     )
