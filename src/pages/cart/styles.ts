@@ -43,6 +43,8 @@ interface InputProps {
 export const Input = styled.input<InputProps>`
     height: 3rem;
     grid-area: ${(props) => props.gridArea};
+
+    padding-left: 0.25rem;
 `
 
 export const PaymentSection = styled.div`
@@ -62,7 +64,7 @@ export const PaymentOptionsRadio = styled(RadioGroup.Item)`
     height: min-content;
     width: 10rem;
     align-items: center;
-    padding-block: 0.5rem;
+    padding-block: 0.75rem;
     padding-left: 0.75rem;
     gap: 0.5rem;
 
@@ -107,11 +109,11 @@ export const CheckoutButton = styled.button`
     justify-content: center;
     align-items: center;
 
-    padding: 0.3rem 1rem;
+    padding: 0.5rem 1rem;
 
     font-family: "Mukta Vaani", sans-serif;
     color: ${(props) => props.theme.white};
-    font-weight: 500;
+    font-weight: 600;
     text-transform: uppercase;
 
     border: none;

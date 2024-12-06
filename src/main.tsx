@@ -4,6 +4,7 @@ import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 import App from './App'
 import { Menu } from './pages/menu'
 import { enableMSW } from './api/mocks/index'
+import { Cart } from './pages/cart'
 
 const router = createBrowserRouter([
   {
@@ -13,6 +14,10 @@ const router = createBrowserRouter([
       {
         path: '/',
         element: <Menu />
+      },
+      {
+        path: '/cart',
+        element: <Cart />
       }
     ]
   }

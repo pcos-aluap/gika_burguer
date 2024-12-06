@@ -18,6 +18,7 @@ import {
     SessionHeading
 }
     from "./styles"
+import { getAddressByCEP } from "../../api/utils/search-cep"
 
 
 interface FormInputs {
@@ -53,8 +54,11 @@ export function Cart() {
         return (previousValue += currentItem.menuItem.cost * currentItem.quantity)
     }, 0)
     const shippingFee = 3;
+
     const {
         register,
+        setValue,
+        setFocus,
         handleSubmit,
         watch,
         formState: { errors }
@@ -64,8 +68,20 @@ export function Cart() {
 
     console.log(cartState)
 
-    const handleOrderCheckout: SubmitHandler<FormInputs> = (data) => {
+    const handleFindAddress = (e: React.FocusEvent<HTMLInputElement>) => {
+        const cep = e.target.value.replace(/\D/g, '')
 
+        getAddressByCEP(cep).then((res) => {
+            setValue('street', res.street)
+            setValue('neighborhood', res.neighborhood)
+            setValue('city', res.city)
+
+            setFocus('number')
+        })
+    }
+
+    const handleOrderCheckout: SubmitHandler<FormInputs> = (data) => {
+        
     }
 
     return (
@@ -77,6 +93,7 @@ export function Cart() {
                         gridArea="cep"
                         placeholder="CEP"
                         {...register('cep')}
+                        onBlur={handleFindAddress}
                     />
                     <Input
                         gridArea="street"

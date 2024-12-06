@@ -1,10 +1,9 @@
-import { vi } from 'vitest'
 import * as ReactResponsive from 'react-responsive'
 import { Header } from '../header'
 import { MenuContextProvider } from '../../contexts/menu-provider.tsx'
 import { cleanup, render } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import { expect } from 'vitest'
+import { expect, vi } from 'vitest'
 import { MemoryRouter } from 'react-router-dom'
 import { MenuCategory } from '../../@types/menu'
 
