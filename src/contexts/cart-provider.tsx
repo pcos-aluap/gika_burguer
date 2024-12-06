@@ -1,4 +1,4 @@
-import { createContext, ReactNode, useReducer } from "react"
+import { createContext, ReactNode, useEffect, useReducer } from "react"
 import { CartItem, cartReducer } from "../reducers/cart/reducer"
 import { addOrUpdateItemAction, removeItemAction } from "../reducers/cart/actions"
 
@@ -16,7 +16,19 @@ interface CartContextProviderProps {
 }
 
 export function CartContextProvider({ children }: CartContextProviderProps){
-    const [cartState, dispatch] = useReducer(cartReducer, []);
+    const [cartState, dispatch] = useReducer(cartReducer, [],
+        (cartState) => {
+            const storedStateAsJSON = localStorage.getItem(
+                '@gika-burguer:cart-state-1.0.0'
+            )
+
+            if(storedStateAsJSON) {
+                return JSON.parse(storedStateAsJSON)
+            }
+
+            return cartState
+        }
+    );
 
     function addOrUpdateItem(cartItem: CartItem) {
         dispatch(addOrUpdateItemAction(cartItem));
@@ -25,6 +37,13 @@ export function CartContextProvider({ children }: CartContextProviderProps){
     function removeItem(cartItemId: CartItem['menuItem']['id']) {
         dispatch(removeItemAction(cartItemId));
     }
+
+    useEffect(() => {
+        if(cartState) {
+            const stateJSON = JSON.stringify(cartState)
+            localStorage.setItem('@gika-burguer:cart-state-1.0.0', stateJSON)
+        }
+    }, [cartState])
     
     return (
         <CartContext.Provider
