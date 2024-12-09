@@ -2,7 +2,6 @@ import { createContext, ReactNode, useEffect, useReducer } from "react"
 import { CartItem, cartReducer } from "../reducers/cart/reducer"
 import { addOrUpdateItemAction, removeItemAction } from "../reducers/cart/actions"
 
-
 interface CartContextType {
     cartState: CartItem[]
     addOrUpdateItem: (cartItem: CartItem) => void

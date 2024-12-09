@@ -7,6 +7,7 @@ import { SearchBarComponent } from '../../elements/search-bar.tsx/index.tsx'
 import { Container, ContainerHeaderTop, LinkMenuIconButton, LinksList, Nav, NavBarLink, SearchBar, SearchBarContainer, UsersMenuContainer, UsersMenuIconButton } from './styles.ts'
 import { useMenu } from '../../hooks/useMenu.tsx'
 import { HeaderNavSkeleton } from './components/hearder-nav-skeleton.tsx'
+import { useCart } from '../../hooks/useCart.tsx'
 
 interface HeaderLink {
     id: number;
@@ -18,6 +19,9 @@ export function Header() {
     const [searchedName, setSearchedName] = useState('')
     const [headersLinks, setHeadersLinks] = useState<HeaderLink[]>([])
     const [shouldShowMobileSearchBar, setShouldShowMobileSearchBar] = useState<boolean>(false)
+
+    const { cartState } = useCart()
+
     const isMobile = useMediaQuery({
         query: '(max-width: 768px)'
     })
@@ -63,7 +67,13 @@ export function Header() {
                 <UsersMenuContainer>
                     {
                         !isMobile ?
-                            <LinkMenuIconButton data-testid='link-to-cart' to={`/cart`}><ShoppingCartSimple /></LinkMenuIconButton> :
+                            <LinkMenuIconButton data-testid='link-to-cart' to={`/cart`}>
+                                <ShoppingCartSimple />
+                                {
+                                    cartState.length > 0 &&
+                                    <span>{cartState.length}</span>
+                                }
+                            </LinkMenuIconButton> :
                             !shouldShowMobileSearchBar && <UsersMenuIconButton data-testid='mobile-search-button' onClick={handleShouldShowMobileSearchBar}><MagnifyingGlass /></UsersMenuIconButton>
                     }
 
@@ -74,21 +84,21 @@ export function Header() {
                 <LinksList>
                     {
                         headersLinks.length > 0 ?
-                        headersLinks.map(link => <li key={link.id}><NavBarLink to={`#${link.id}`} end>{link.name}</NavBarLink></li>) :
-                        <HeaderNavSkeleton />
+                            headersLinks.map(link => <li key={link.id}><NavBarLink to={`#${link.id}`} end>{link.name}</NavBarLink></li>) :
+                            <HeaderNavSkeleton />
                     }
 
                 </LinksList>
                 {
                     !isMobile &&
                     <SearchBarContainer>
-                    <SearchBar
-                        placeholder="Buscar por item"
-                        value={searchedName}
-                        onChange={handleSearchInput}
-                    />
-                    <MagnifyingGlass size={16} />
-                </SearchBarContainer>
+                        <SearchBar
+                            placeholder="Buscar por item"
+                            value={searchedName}
+                            onChange={handleSearchInput}
+                        />
+                        <MagnifyingGlass size={16} />
+                    </SearchBarContainer>
                 }
             </Nav>
         </Container>

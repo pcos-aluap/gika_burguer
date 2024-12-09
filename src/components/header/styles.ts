@@ -45,6 +45,7 @@ export const UsersMenuContainer = styled.div`
 `;
 
 export const LinkMenuIconButton = styled(Link)`
+    position: relative;
     width: 2.5rem;
     height: 2.5rem;
     display: flex;
@@ -61,6 +62,24 @@ export const LinkMenuIconButton = styled(Link)`
     color: ${(props) => props.theme.white};
     font-size: 1.25rem;
 
+    span {
+        position: absolute;
+        top: 0;
+        right: 0;
+
+        display: flex;
+        width: 1rem;
+        height: 1rem;
+        justify-content: center;
+        align-items: center;
+
+        background: ${({theme}) => theme["cordovan-400"]};
+        border-radius: 99px;
+
+        color: white;
+        font-size: 0.75rem;
+        text-decoration: none;
+    }
 
     &:hover {
         background: ${(props) => props.theme["cordovan-400"]};
