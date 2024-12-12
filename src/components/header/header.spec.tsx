@@ -6,6 +6,8 @@ import userEvent from '@testing-library/user-event'
 import { expect, vi } from 'vitest'
 import { MemoryRouter } from 'react-router-dom'
 import { MenuCategory } from '../../@types/menu'
+import { useCart } from '../../hooks/useCart.tsx'
+import { CartItem } from '../../reducers/cart/reducer.ts'
 
 const closeSearch = vi.fn()
 
@@ -71,12 +73,45 @@ const menuMock: MenuCategory[] =
         }
     ]
 
+const cart: CartItem[] = [
+    {
+        menuItem: {
+            id: 1,
+            image: '',
+            name: 'Pizza de mussarela',
+            description: 'mussarela',
+            cost: 3.50,
+            available: true
+        },
+        foodPreferencies: '',
+        quantity: 1
+    },
+    {
+        menuItem: {
+            id: 3,
+            image: '',
+            name: 'hamburguer 03',
+            description: 'hamburguer, queijo, presunto',
+            cost: 3.50,
+            available: true
+        },
+        foodPreferencies: '',
+        quantity: 2
+    }
+]
+
 
 vi.mock('../../hooks/useMenu', () => ({
     useMenu: () => ({
         closeSearch: closeSearch,
         menu: menuMock
     }),
+}))
+
+vi.mock('../../hooks/useCart', () => ({
+    useCart: () => ({
+        cartState: cart
+    })
 }))
 
 vi.mock('react-responsive', () => ({
@@ -249,4 +284,12 @@ describe('Header Component', () => {
 
         expect(wrapper.queryByPlaceholderText('Buscar por item')).toBeInTheDocument()
     })
+
+    // it('displays cart item quantity in the header', () => {
+    //     const wrapper = render(<Header />)
+        
+    //     // Verify the cart item quantity is displayed
+    //     const cartQuantity = wrapper.getByText(3)
+    //     expect(cartQuantity).toBeInTheDocument()
+    // })
 })

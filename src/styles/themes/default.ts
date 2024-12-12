@@ -5,6 +5,7 @@ export const defaultTheme = {
     'cordovan-500': '#954948',
 
     'success': '#44cd08',
+    'error': '#ff0707',
 
     'base-title': '#272221',
     'base-subtitle': '#403937',

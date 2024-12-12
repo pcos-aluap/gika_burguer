@@ -40,9 +40,16 @@ interface InputProps {
     gridArea: 'cep' | 'street' | 'number' | 'fullAddress' | 'neighborhood' | 'city' | 'state'
 }
 
-export const Input = styled.input<InputProps>`
-    height: 3rem;
+export const InputContainer = styled.div<InputProps>`
     grid-area: ${(props) => props.gridArea};
+    display: flex;
+    flex-direction: column;
+
+    gap: 0.25rem;
+`
+
+export const Input = styled.input`
+    height: 3rem;
 
     padding-left: 0.25rem;
 `
@@ -52,6 +59,11 @@ export const PaymentSection = styled.div`
 
     margin-top: 2rem;
 `
+
+export const Error = styled.span`
+    color: ${({theme}) => theme.error};
+    font-size: 0.75rem;
+`;
 
 export const PaymentOptionsContainer = styled(RadioGroup.Root)`
     display: flex;

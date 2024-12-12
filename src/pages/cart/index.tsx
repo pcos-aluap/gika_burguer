@@ -1,7 +1,7 @@
 import { useCart } from "../../hooks/useCart"
 import { CartItemCard } from "../../components/cart-item-card"
 import { Bank, CreditCard, Money, PixLogo } from "@phosphor-icons/react"
-import { SubmitHandler, useForm } from "react-hook-form"
+import { Controller, SubmitHandler, useForm } from "react-hook-form"
 import { z } from "zod"
 import { zodResolver } from "@hookform/resolvers/zod"
 import {
@@ -10,7 +10,9 @@ import {
     CheckoutButton,
     CheckoutContainer,
     Container,
+    Error,
     Input,
+    InputContainer,
     ItemsContainer,
     PaymentOptionsContainer,
     PaymentOptionsRadio,
@@ -20,20 +22,10 @@ import {
     from "./styles"
 import { getAddressByCEP } from "../../api/utils/search-cep"
 
+const cepValidationRegex = new RegExp(`\d{5}-\d{3}`)
 
-interface FormInputs {
-    cep: number
-    street: string
-    number: string
-    fullAdreess: string
-    neighborhood: string
-    city: string
-    paymentMethod: 'credit' | 'debit' | 'pix' | 'cash'
-    change: number
-}
-
-const newOrder = z.object({
-    cep: z.number({ invalid_type_error: 'Informe o CEP' }),
+const newOrderFormSchema = z.object({
+    cep: z.string(),
     street: z.string().min(3, 'Informe a rua'),
     number: z.string().min(1, 'Informe o número'),
     fullAddress: z.string(),
@@ -42,10 +34,10 @@ const newOrder = z.object({
     paymentMethod: z.enum(['credit', 'debit', 'pix', 'cash'], {
         invalid_type_error: 'Informe um método de pagamento',
     }),
-    change: z.number(),
+    change: z.number().optional(),
 })
 
-export type OrderInfo = z.infer<typeof newOrder>
+export type newOrderFormInputs = z.infer<typeof newOrderFormSchema>
 
 export function Cart() {
     const { cartState } = useCart()
@@ -55,21 +47,25 @@ export function Cart() {
     }, 0)
     const shippingFee = 3;
 
+    const cartIsEmpty = cartState.length <= 0
+
     const {
         register,
         setValue,
         setFocus,
         handleSubmit,
-        watch,
+        control,
         formState: { errors }
-    } = useForm<FormInputs>({
-        resolver: zodResolver(newOrder),
+    } = useForm<newOrderFormInputs>({
+        resolver: zodResolver(newOrderFormSchema),
     })
 
-    console.log(cartState)
+    console.log(errors)
 
     const handleFindAddress = (e: React.FocusEvent<HTMLInputElement>) => {
-        const cep = e.target.value.replace(/\D/g, '')
+        const cep = e.target.value
+
+        console.log(cep)
 
         getAddressByCEP(cep).then((res) => {
             setValue('street', res.street)
@@ -80,69 +76,131 @@ export function Cart() {
         })
     }
 
-    const handleOrderCheckout: SubmitHandler<FormInputs> = (data) => {
-        
+    function handleOrderCheckout(data: any) {
+        console.log('aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa')
+        console.log(data)
     }
 
     return (
-        <Container id="order" onSubmit={() => { }}>
+        <Container id="order" onSubmit={handleSubmit(handleOrderCheckout)}>
             <AddressInformationContainer>
                 <SessionHeading>Endereço</SessionHeading>
                 <AddressForm>
-                    <Input
-                        gridArea="cep"
-                        placeholder="CEP"
-                        {...register('cep')}
-                        onBlur={handleFindAddress}
-                    />
-                    <Input
-                        gridArea="street"
-                        placeholder="Rua"
-                        {...register('street')}
-                    />
-                    <Input
-                        gridArea="number"
-                        placeholder="Número"
-                        {...register('number')}
-                    />
-                    <Input
-                        gridArea="fullAddress"
-                        placeholder="Complemento"
-                        {...register('fullAdreess')}
-                    />
-                    <Input
-                        gridArea="neighborhood"
-                        placeholder="Bairro"
-                        {...register('neighborhood')}
-                    />
-                    <Input
-                        gridArea="city"
-                        placeholder="Ponto de Referência"
-                        {...register('city')}
-                    />
+                    <InputContainer gridArea="cep">
+                        <Input
+                            placeholder="CEP"
+                            {...register('cep', {
+                                pattern: {
+                                    value: cepValidationRegex,
+                                    message: 'Formato inválido'
+                                } 
+                            })}
+                            onBlur={handleFindAddress}
+                        />
+                        {
+                            errors.cep &&
+                            <Error>{errors.cep?.message}</Error>
+                        }
+                    </InputContainer>
+                    <InputContainer gridArea="street">
+                        <Input
+                            placeholder="Rua"
+                            {...register('street')}
+                        />
+                        {
+                            errors.street &&
+                            <Error>{errors.street?.message}</Error>
+                        }
+                    </InputContainer>
+                    <InputContainer gridArea="number">
+                        <Input
+                            placeholder="Número"
+                            {...register('number')}
+                        />
+                        {
+                            errors.number &&
+                            <Error>{errors.number?.message}</Error>
+                        }
+                    </InputContainer>
+                    <InputContainer gridArea="fullAddress">
+                        <Input
+                            placeholder="Complemento"
+                            {...register('fullAddress')}
+                        />
+                        {
+                            errors.fullAddress &&
+                            <Error>{errors.fullAddress?.message}</Error>
+                        }
+                    </InputContainer>
+                    <InputContainer gridArea="neighborhood">
+                        <Input
+                            placeholder="Bairro"
+                            {...register('neighborhood')}
+                        />
+                        {
+                            errors.neighborhood &&
+                            <Error>{errors.neighborhood?.message}</Error>
+                        }
+                    </InputContainer>
+                    <InputContainer gridArea="city">
+                        <Input
+                            placeholder="Ponto de Referência"
+                            {...register('city')}
+                        />
+                        {
+                            errors.city &&
+                            <Error>{errors.city?.message}</Error>
+                        }
+                    </InputContainer>
                 </AddressForm>
             </AddressInformationContainer>
             <PaymentSection>
                 <SessionHeading>Selecione a forma de pagamento</SessionHeading>
-                <PaymentOptionsContainer>
-
-                    <PaymentOptionsRadio value="credito">
-                        <CreditCard size={20} />
-                        Cartão de Crédito
-                    </PaymentOptionsRadio>
-                    <PaymentOptionsRadio value="debito">
-                        <Bank size={20} />
-                        Cartão de débito
-                    </PaymentOptionsRadio>
-                    <PaymentOptionsRadio value="pix">
-                        <PixLogo size={20} />
-                        Pix
-                    </PaymentOptionsRadio>
-                    <PaymentOptionsRadio value="dinheiro">
-                        <Money size={20} />
-                        Dinheiro
-                    </PaymentOptionsRadio>
-                </PaymentOptionsContainer>
+                <Controller
+                    control={control}
+                    name="paymentMethod"
+                    render={({ field }) => {
+                        return (
+                            <PaymentOptionsContainer
+                                onValueChange={field.onChange}
+                                value={field.value}
+                            >
+                                <PaymentOptionsRadio
+                                    value="credit"
+                                    {...register('paymentMethod')}
+                                >
+                                    <CreditCard size={20} />
+                                    Cartão de Crédito
+                                </PaymentOptionsRadio>
+                                <PaymentOptionsRadio
+                                    value="debit"
+                                    {...register('paymentMethod')}
+                                >
+                                    <Bank size={20} />
+                                    Cartão de débito
+                                </PaymentOptionsRadio>
+                                <PaymentOptionsRadio
+                                    value="pix"
+                                    {...register('paymentMethod')}
+                                >
+                                    <PixLogo size={20} />
+                                    Pix
+                                </PaymentOptionsRadio>
+                                <PaymentOptionsRadio
+                                    value="cash"
+                                    {...register('paymentMethod')}
+                                >
+                                    <Money size={20} />
+                                    Dinheiro
+                                </PaymentOptionsRadio>
+                            </PaymentOptionsContainer>
+                        )
+                    }}
+                />
+                {
+                    errors.paymentMethod &&
+                    <Error>{errors.paymentMethod?.message}</Error>
+                }
             </PaymentSection>
             <ItemsContainer>
                 <SessionHeading>Itens da compra</SessionHeading>
@@ -180,7 +238,7 @@ export function Cart() {
                         style: 'currency',
                     }).format(totalItemsPrice + shippingFee)}</strong>
                 </div>
-                <CheckoutButton>Concluir compra</CheckoutButton>
+                <CheckoutButton type='submit' form="order" disabled={cartIsEmpty}>Concluir compra</CheckoutButton>
             </CheckoutContainer>
         </Container>
     )
