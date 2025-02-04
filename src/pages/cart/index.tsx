@@ -17,6 +17,7 @@ import {
     PaymentOptionsContainer,
     PaymentOptionsRadio,
     PaymentSection,
+    PersonalInformationContainer,
     SessionHeading
 }
     from "./styles"
@@ -25,6 +26,8 @@ import { getAddressByCEP } from "../../api/utils/search-cep"
 const cepValidationRegex = new RegExp(`\d{5}-\d{3}`)
 
 const newOrderFormSchema = z.object({
+    name: z.string().min(3, 'Informe o seu nome'),
+    phone: z.string(),
     cep: z.string(),
     street: z.string().min(3, 'Informe a rua'),
     number: z.string().min(1, 'Informe o número'),
@@ -83,163 +86,178 @@ export function Cart() {
 
     return (
         <Container id="order" onSubmit={handleSubmit(handleOrderCheckout)}>
-            <AddressInformationContainer>
-                <SessionHeading>Endereço</SessionHeading>
-                <AddressForm>
-                    <InputContainer gridArea="cep">
-                        <Input
-                            placeholder="CEP"
-                            {...register('cep', {
-                                pattern: {
-                                    value: cepValidationRegex,
-                                    message: 'Formato inválido'
-                                } 
-                            })}
-                            onBlur={handleFindAddress}
-                        />
-                        {
-                            errors.cep &&
-                            <Error>{errors.cep?.message}</Error>
-                        }
-                    </InputContainer>
-                    <InputContainer gridArea="street">
-                        <Input
-                            placeholder="Rua"
-                            {...register('street')}
-                        />
-                        {
-                            errors.street &&
-                            <Error>{errors.street?.message}</Error>
-                        }
-                    </InputContainer>
-                    <InputContainer gridArea="number">
-                        <Input
-                            placeholder="Número"
-                            {...register('number')}
-                        />
-                        {
-                            errors.number &&
-                            <Error>{errors.number?.message}</Error>
-                        }
-                    </InputContainer>
-                    <InputContainer gridArea="fullAddress">
-                        <Input
-                            placeholder="Complemento"
-                            {...register('fullAddress')}
-                        />
-                        {
-                            errors.fullAddress &&
-                            <Error>{errors.fullAddress?.message}</Error>
-                        }
-                    </InputContainer>
-                    <InputContainer gridArea="neighborhood">
-                        <Input
-                            placeholder="Bairro"
-                            {...register('neighborhood')}
-                        />
-                        {
-                            errors.neighborhood &&
-                            <Error>{errors.neighborhood?.message}</Error>
-                        }
-                    </InputContainer>
-                    <InputContainer gridArea="city">
-                        <Input
-                            placeholder="Ponto de Referência"
-                            {...register('city')}
-                        />
-                        {
-                            errors.city &&
-                            <Error>{errors.city?.message}</Error>
-                        }
-                    </InputContainer>
-                </AddressForm>
-            </AddressInformationContainer>
-            <PaymentSection>
-                <SessionHeading>Selecione a forma de pagamento</SessionHeading>
-                <Controller
-                    control={control}
-                    name="paymentMethod"
-                    render={({ field }) => {
-                        return (
-                            <PaymentOptionsContainer
-                                onValueChange={field.onChange}
-                                value={field.value}
-                            >
-                                <PaymentOptionsRadio
-                                    value="credit"
-                                    {...register('paymentMethod')}
+            <div>
+                <PersonalInformationContainer>
+                    <SessionHeading>Dados Pessoais</SessionHeading>
+                    <Input
+                        placeholder="Nome"
+                        {...register('name')}
+                    />
+                    <Input
+                        placeholder="Telefone"
+                        {...register('phone')}
+                    />
+                </PersonalInformationContainer>
+                <AddressInformationContainer>
+                    <SessionHeading>Endereço</SessionHeading>
+                    <AddressForm>
+                        <InputContainer gridArea="cep">
+                            <Input
+                                placeholder="CEP"
+                                {...register('cep', {
+                                    pattern: {
+                                        value: cepValidationRegex,
+                                        message: 'Formato inválido'
+                                    }
+                                })}
+                                onBlur={handleFindAddress}
+                            />
+                            {
+                                errors.cep &&
+                                <Error>{errors.cep?.message}</Error>
+                            }
+                        </InputContainer>
+                        <InputContainer gridArea="street">
+                            <Input
+                                placeholder="Rua"
+                                {...register('street')}
+                            />
+                            {
+                                errors.street &&
+                                <Error>{errors.street?.message}</Error>
+                            }
+                        </InputContainer>
+                        <InputContainer gridArea="number">
+                            <Input
+                                placeholder="Número"
+                                {...register('number')}
+                            />
+                            {
+                                errors.number &&
+                                <Error>{errors.number?.message}</Error>
+                            }
+                        </InputContainer>
+                        <InputContainer gridArea="fullAddress">
+                            <Input
+                                placeholder="Complemento"
+                                {...register('fullAddress')}
+                            />
+                            {
+                                errors.fullAddress &&
+                                <Error>{errors.fullAddress?.message}</Error>
+                            }
+                        </InputContainer>
+                        <InputContainer gridArea="neighborhood">
+                            <Input
+                                placeholder="Bairro"
+                                {...register('neighborhood')}
+                            />
+                            {
+                                errors.neighborhood &&
+                                <Error>{errors.neighborhood?.message}</Error>
+                            }
+                        </InputContainer>
+                        <InputContainer gridArea="city">
+                            <Input
+                                placeholder="Ponto de Referência"
+                                {...register('city')}
+                            />
+                            {
+                                errors.city &&
+                                <Error>{errors.city?.message}</Error>
+                            }
+                        </InputContainer>
+                    </AddressForm>
+                </AddressInformationContainer>
+                <PaymentSection>
+                    <SessionHeading>Selecione a forma de pagamento</SessionHeading>
+                    <Controller
+                        control={control}
+                        name="paymentMethod"
+                        render={({ field }) => {
+                            return (
+                                <PaymentOptionsContainer
+                                    onValueChange={field.onChange}
+                                    value={field.value}
                                 >
-                                    <CreditCard size={20} />
-                                    Cartão de Crédito
-                                </PaymentOptionsRadio>
-                                <PaymentOptionsRadio
-                                    value="debit"
-                                    {...register('paymentMethod')}
-                                >
-                                    <Bank size={20} />
-                                    Cartão de débito
-                                </PaymentOptionsRadio>
-                                <PaymentOptionsRadio
-                                    value="pix"
-                                    {...register('paymentMethod')}
-                                >
-                                    <PixLogo size={20} />
-                                    Pix
-                                </PaymentOptionsRadio>
-                                <PaymentOptionsRadio
-                                    value="cash"
-                                    {...register('paymentMethod')}
-                                >
-                                    <Money size={20} />
-                                    Dinheiro
-                                </PaymentOptionsRadio>
-                            </PaymentOptionsContainer>
-                        )
-                    }}
-                />
-                {
-                    errors.paymentMethod &&
-                    <Error>{errors.paymentMethod?.message}</Error>
-                }
-            </PaymentSection>
-            <ItemsContainer>
-                <SessionHeading>Itens da compra</SessionHeading>
-                {
-                    cartState.map((item) => (
-                        <CartItemCard
-                            key={item.menuItem.id}
-                            name={item.menuItem.name}
-                            image={item.menuItem.image}
-                            price={item.menuItem.cost}
-                            quantity={item.quantity}
-                        />
-                    ))
-                }
-            </ItemsContainer>
-            <CheckoutContainer>
-                <div>
-                    <span>Total de itens</span>
-                    <span>{new Intl.NumberFormat('pt-br', {
-                        currency: 'BRL',
-                        style: 'currency',
-                    }).format(totalItemsPrice)}</span>
-                </div>
-                <div>
-                    <span>Entrega</span>
-                    <span>{new Intl.NumberFormat('pt-br', {
-                        currency: 'BRL',
-                        style: 'currency',
-                    }).format(shippingFee)}</span>
-                </div>
-                <div>
-                    <strong>Total</strong>
-                    <strong>{new Intl.NumberFormat('pt-br', {
-                        currency: 'BRL',
-                        style: 'currency',
-                    }).format(totalItemsPrice + shippingFee)}</strong>
-                </div>
-                <CheckoutButton type='submit' form="order" disabled={cartIsEmpty}>Concluir compra</CheckoutButton>
-            </CheckoutContainer>
+                                    <PaymentOptionsRadio
+                                        value="credit"
+                                        {...register('paymentMethod')}
+                                    >
+                                        <CreditCard size={20} />
+                                        Cartão de Crédito
+                                    </PaymentOptionsRadio>
+                                    <PaymentOptionsRadio
+                                        value="debit"
+                                        {...register('paymentMethod')}
+                                    >
+                                        <Bank size={20} />
+                                        Cartão de débito
+                                    </PaymentOptionsRadio>
+                                    <PaymentOptionsRadio
+                                        value="pix"
+                                        {...register('paymentMethod')}
+                                    >
+                                        <PixLogo size={20} />
+                                        Pix
+                                    </PaymentOptionsRadio>
+                                    <PaymentOptionsRadio
+                                        value="cash"
+                                        {...register('paymentMethod')}
+                                    >
+                                        <Money size={20} />
+                                        Dinheiro
+                                    </PaymentOptionsRadio>
+                                </PaymentOptionsContainer>
+                            )
+                        }}
+                    />
+                    {
+                        errors.paymentMethod &&
+                        <Error>{errors.paymentMethod?.message}</Error>
+                    }
+                </PaymentSection>
+            </div>
+            <div>
+                <ItemsContainer>
+                    <SessionHeading>Itens da compra</SessionHeading>
+                    {
+                        cartState.map((item) => (
+                            <CartItemCard
+                                key={item.menuItem.id}
+                                name={item.menuItem.name}
+                                image={item.menuItem.image}
+                                price={item.menuItem.cost}
+                                quantity={item.quantity}
+                            />
+                        ))
+                    }
+                </ItemsContainer>
+                <CheckoutContainer>
+                    <div>
+                        <span>Total de itens</span>
+                        <span>{new Intl.NumberFormat('pt-br', {
+                            currency: 'BRL',
+                            style: 'currency',
+                        }).format(totalItemsPrice)}</span>
+                    </div>
+                    <div>
+                        <span>Entrega</span>
+                        <span>{new Intl.NumberFormat('pt-br', {
+                            currency: 'BRL',
+                            style: 'currency',
+                        }).format(shippingFee)}</span>
+                    </div>
+                    <div>
+                        <strong>Total</strong>
+                        <strong>{new Intl.NumberFormat('pt-br', {
+                            currency: 'BRL',
+                            style: 'currency',
+                        }).format(totalItemsPrice + shippingFee)}</strong>
+                    </div>
+                    <CheckoutButton type='submit' form="order" disabled={cartIsEmpty}>Concluir compra</CheckoutButton>
+                </CheckoutContainer>
+            </div>
         </Container>
     )
 }

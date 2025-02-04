@@ -2,14 +2,15 @@ import styled from "styled-components"
 import * as RadioGroup from "@radix-ui/react-radio-group"
 
 export const Container = styled.form`
-    display: grid;
-    grid-template-areas: 
-    "addressInformationContainer itensContainer"
-    "paymentOptionsContainer checkContainer";
-    grid-template-columns: 60% 1fr;
+    display: flex;
 
-    padding-top: 10rem;
-    margin-inline: 5rem;
+    width: auto;
+    height: auto;
+
+    justify-content: space-around;
+    align-items: center;
+
+    background-color: aliceblue;
 `
 
 export const SessionHeading = styled.h2`
@@ -20,8 +21,17 @@ export const SessionHeading = styled.h2`
     margin-bottom: 1rem;
 `
 
+export const PersonalInformationContainer = styled.div`
+    display: flex;
+    flex-direction: column;
+
+    width: 90%;
+
+    gap: 1rem;
+`
+
 export const AddressInformationContainer = styled.div`
-    grid-area: addressInformationContainer;
+   margin-top: 2rem;
 `
 
 export const AddressForm = styled.div`
@@ -55,8 +65,6 @@ export const Input = styled.input`
 `
 
 export const PaymentSection = styled.div`
-    grid-area: paymentOptionsContainer;
-
     margin-top: 2rem;
 `
 
@@ -97,14 +105,11 @@ export const PaymentOptionsRadio = styled(RadioGroup.Item)`
 `
 
 export const ItemsContainer = styled.div`
-    grid-area: itensContainer;
-
     height: 20rem;
     overflow-y: scroll;
 `
 
 export const CheckoutContainer = styled.div`
-    grid-area: checkContainer;
     margin-top: 2rem;
 
     div {
