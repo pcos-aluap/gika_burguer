@@ -79,6 +79,19 @@ export function Cart() {
         })
     }
 
+    const handleformatPhoneNumber = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const cleaned = event.target.value.replace(/\D/g, '');
+      
+        if (cleaned.length <= 2) {
+          setValue('phone', `(${cleaned}`)
+        }
+        if (cleaned.length <= 6) {
+          setValue('phone', `(${cleaned.slice(0, 2)}) ${cleaned.slice(2)}`)
+        }
+        setValue('phone', `(${cleaned.slice(0, 2)}) ${cleaned.slice(2, 7)}-${cleaned.slice(7, 11)}`)
+    }
+
+
     function handleOrderCheckout(data: any) {
         console.log('aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa')
         console.log(data)
@@ -96,6 +109,7 @@ export function Cart() {
                     <Input
                         placeholder="Telefone"
                         {...register('phone')}
+                        onChange={handleformatPhoneNumber}
                     />
                 </PersonalInformationContainer>
                 <AddressInformationContainer>
