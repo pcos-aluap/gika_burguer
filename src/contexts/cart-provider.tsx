@@ -5,6 +5,7 @@ import { addOrUpdateItemAction, removeItemAction } from "../reducers/cart/action
 
 interface CartContextType {
     cartState: CartItem[]
+    getItemQuantityBy: (menuItemId: number) => number | undefined
     addOrUpdateItem: (cartItem: CartItem) => void
     removeItem: (cartItemId: CartItem['menuItem']['id']) => void
 }
@@ -18,6 +19,15 @@ interface CartContextProviderProps {
 export function CartContextProvider({ children }: CartContextProviderProps){
     const [cartState, dispatch] = useReducer(cartReducer, []);
 
+    function getItemQuantityBy(menuItemId: number){
+        const cartItem = cartState.find(item => item.menuItem.id === menuItemId)
+        if (cartItem) {
+            return cartItem.quantity
+            // setQuantityOfIems(cartItem.quantity)
+            // setIsFormVisible(true)
+        }
+    }
+
     function addOrUpdateItem(cartItem: CartItem) {
         dispatch(addOrUpdateItemAction(cartItem));
     }
@@ -30,6 +40,7 @@ export function CartContextProvider({ children }: CartContextProviderProps){
         <CartContext.Provider
             value={{
                 cartState,
+                getItemQuantityBy,
                 addOrUpdateItem,
                 removeItem
             }}

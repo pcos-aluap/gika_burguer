@@ -8,7 +8,7 @@ import { QuantityInput } from "../../elements/quantity-input"
 import { PriceFormater } from "../../utils/price-formater"
 import { ShowAddToCartFormButton } from "../../elements/add-to-cart-button"
 import * as z from 'zod'
-import { Controller, SubmitHandler, useForm } from "react-hook-form"
+import { Controller, useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 
 interface MenuItemCardProps {
@@ -29,7 +29,7 @@ type AddMenuItemFromCardToCartFormInput = z.infer<typeof addMenuItemFromCardToCa
 
 export function MenuCard({ name, description, price, available, id }: MenuItemCardProps) {
     const { openModal } = useDetailsModal()
-    const { addOrUpdateItem, cartState } = useCart()
+    const { addOrUpdateItem, getItemQuantityBy } = useCart()
 
     const { control, setValue, getValues, handleSubmit } = useForm<AddMenuItemFromCardToCartFormInput>({
         resolver: zodResolver(addMenuItemFromCardToCartFormSchema),
@@ -38,16 +38,14 @@ export function MenuCard({ name, description, price, available, id }: MenuItemCa
         }
     })
 
-    const [quantityOfItems, setQuantityOfIems] = useState<number>(0)
     const [isFormVisible, setIsFormVisible] = useState(false)
 
     const [addToCartButtonHasBeenClicked, setAddToCartButtonHasBeenClicked] = useState(false)
 
     function updateQuantityAccordingWithCart() {
-        const cartItem = cartState.find(item => item.menuItem.id === id)
-        if (cartItem) {
-            setQuantityOfIems(cartItem.quantity)
-            setIsFormVisible(true)
+        const currentQuantity = getItemQuantityBy(id)
+        if(currentQuantity != undefined){
+            setValue('quantity', currentQuantity)
         }
     }
 
@@ -73,7 +71,7 @@ export function MenuCard({ name, description, price, available, id }: MenuItemCa
         setValue('quantity', getValues('quantity') + 1)
     }
 
-    const addItemTocart = () => {
+    function addItemTocart () {
         addOrUpdateItem({
             menuItem: {
                 id: id,
@@ -83,7 +81,7 @@ export function MenuCard({ name, description, price, available, id }: MenuItemCa
                 cost: price,
                 available: available
             },
-            quantity: quantityOfItems,
+            quantity: getValues('quantity'),
             foodPreferencies: ''
         })
 
