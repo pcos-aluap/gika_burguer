@@ -151,7 +151,7 @@ export const AddToCartContainer = styled.div`
     }
 `
 
-export const FormContainer = styled.div`
+export const FormContainer = styled.form`
     grid-area: quantityInput;
     align-self: flex-end;
 
