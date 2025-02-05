@@ -1,24 +1,21 @@
 import { useCart } from "../../hooks/useCart"
 import { CartItemCard } from "../../components/cart-item-card"
 import { Bank, CreditCard, Money, PixLogo } from "@phosphor-icons/react"
-import { Controller, SubmitHandler, useForm } from "react-hook-form"
+import { Controller, useForm } from "react-hook-form"
 import { z } from "zod"
 import { zodResolver } from "@hookform/resolvers/zod"
 import {
     AddressForm,
-    AddressInformationContainer,
     CheckoutButton,
     CheckoutContainer,
     Container,
     Error,
+    InformationContainer,
     Input,
     InputContainer,
     ItemsContainer,
     PaymentOptionsContainer,
     PaymentOptionsRadio,
-    PaymentSection,
-    PersonalInformationContainer,
-    SessionHeading
 }
     from "./styles"
 import { getAddressByCEP } from "../../api/utils/search-cep"
@@ -27,13 +24,15 @@ const cepValidationRegex = new RegExp(`\d{5}-\d{3}`)
 
 const newOrderFormSchema = z.object({
     name: z.string().min(3, 'Informe o seu nome'),
-    phone: z.string(),
-    cep: z.string(),
+    phone: z.string().regex(/^\(\d{2}\)\s\d{5}-\d{4}$/, {
+        message: "Informe um telefone para contato",
+    }),
+    cep: z.string().min(8, 'Informe o CEP'),
     street: z.string().min(3, 'Informe a rua'),
     number: z.string().min(1, 'Informe o número'),
-    fullAddress: z.string(),
+    fullAddress: z.string().optional(),
     neighborhood: z.string().min(3, 'Informe o bairro'),
-    city: z.string().min(3, 'Informe a cidade'),
+    landMark: z.string().min(3, 'Informe a cidade'),
     paymentMethod: z.enum(['credit', 'debit', 'pix', 'cash'], {
         invalid_type_error: 'Informe um método de pagamento',
     }),
@@ -58,35 +57,35 @@ export function Cart() {
         setFocus,
         handleSubmit,
         control,
+        setError,
         formState: { errors }
     } = useForm<newOrderFormInputs>({
         resolver: zodResolver(newOrderFormSchema),
     })
 
-    console.log(errors)
-
     const handleFindAddress = (e: React.FocusEvent<HTMLInputElement>) => {
         const cep = e.target.value
-
-        console.log(cep)
 
         getAddressByCEP(cep).then((res) => {
             setValue('street', res.street)
             setValue('neighborhood', res.neighborhood)
-            setValue('city', res.city)
 
             setFocus('number')
+        }).catch(() => {
+            setError('cep', {
+                message: 'CEP inválido'
+            })
         })
     }
 
     const handleformatPhoneNumber = (event: React.ChangeEvent<HTMLInputElement>) => {
         const cleaned = event.target.value.replace(/\D/g, '');
-      
+
         if (cleaned.length <= 2) {
-          setValue('phone', `(${cleaned}`)
+            setValue('phone', `(${cleaned}`)
         }
         if (cleaned.length <= 6) {
-          setValue('phone', `(${cleaned.slice(0, 2)}) ${cleaned.slice(2)}`)
+            setValue('phone', `(${cleaned.slice(0, 2)}) ${cleaned.slice(2)}`)
         }
         setValue('phone', `(${cleaned.slice(0, 2)}) ${cleaned.slice(2, 7)}-${cleaned.slice(7, 11)}`)
     }
@@ -100,20 +99,32 @@ export function Cart() {
     return (
         <Container id="order" onSubmit={handleSubmit(handleOrderCheckout)}>
             <div>
-                <PersonalInformationContainer>
-                    <SessionHeading>Dados Pessoais</SessionHeading>
-                    <Input
-                        placeholder="Nome"
-                        {...register('name')}
-                    />
-                    <Input
-                        placeholder="Telefone"
-                        {...register('phone')}
-                        onChange={handleformatPhoneNumber}
-                    />
-                </PersonalInformationContainer>
-                <AddressInformationContainer>
-                    <SessionHeading>Endereço</SessionHeading>
+                <InformationContainer>
+                    <h2>Dados Pessoais</h2>
+                    <InputContainer>
+                        <Input
+                            placeholder="Nome"
+                            {...register('name')}
+                        />
+                        {
+                            errors.name &&
+                            <Error>{errors.name?.message}</Error>
+                        }
+                    </InputContainer>
+                    <InputContainer>
+                        <Input
+                            placeholder="Telefone"
+                            {...register('phone')}
+                            onChange={handleformatPhoneNumber}
+                        />
+                        {
+                            errors.phone &&
+                            <Error>{errors.phone?.message}</Error>
+                        }
+                    </InputContainer>
+                </InformationContainer>
+                <InformationContainer>
+                    <h2>Endereço</h2>
                     <AddressForm>
                         <InputContainer gridArea="cep">
                             <Input
@@ -171,20 +182,20 @@ export function Cart() {
                                 <Error>{errors.neighborhood?.message}</Error>
                             }
                         </InputContainer>
-                        <InputContainer gridArea="city">
+                        <InputContainer gridArea="landMark">
                             <Input
                                 placeholder="Ponto de Referência"
-                                {...register('city')}
+                                {...register('landMark')}
                             />
                             {
-                                errors.city &&
-                                <Error>{errors.city?.message}</Error>
+                                errors.landMark &&
+                                <Error>{errors.landMark?.message}</Error>
                             }
                         </InputContainer>
                     </AddressForm>
-                </AddressInformationContainer>
-                <PaymentSection>
-                    <SessionHeading>Selecione a forma de pagamento</SessionHeading>
+                </InformationContainer>
+                <InformationContainer>
+                    <h2>Selecione a forma de pagamento</h2>
                     <Controller
                         control={control}
                         name="paymentMethod"
@@ -230,11 +241,11 @@ export function Cart() {
                         errors.paymentMethod &&
                         <Error>{errors.paymentMethod?.message}</Error>
                     }
-                </PaymentSection>
+                </InformationContainer>
             </div>
             <div>
                 <ItemsContainer>
-                    <SessionHeading>Itens da compra</SessionHeading>
+                    <h2>Itens da compra</h2>
                     {
                         cartState.map((item) => (
                             <CartItemCard

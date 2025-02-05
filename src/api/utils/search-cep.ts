@@ -25,6 +25,10 @@ interface Address {
 export async function getAddressByCEP(cep: string): Promise<Address> {
     const response = await axios.get<AddressAPIResponse>(`https://viacep.com.br/ws/${cep}/json/`)
 
+    if(!response.data){
+        throw new Error('CEP is invalid')
+    }
+
     const address: Address = {
         street: response.data.logradouro,
         neighborhood: response.data.bairro,

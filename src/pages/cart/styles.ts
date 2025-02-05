@@ -13,25 +13,16 @@ export const Container = styled.form`
     background-color: aliceblue;
 `
 
-export const SessionHeading = styled.h2`
+export const InformationContainer = styled.section`
+   margin-top: 1rem;
+
+   h2 {
     font-family: "Mukta Vaani", sans-serif;
     font-size: 1.5rem;
     color: ${({ theme }) => theme["base-title"]};
 
-    margin-bottom: 1rem;
-`
-
-export const PersonalInformationContainer = styled.div`
-    display: flex;
-    flex-direction: column;
-
-    width: 90%;
-
-    gap: 1rem;
-`
-
-export const AddressInformationContainer = styled.div`
-   margin-top: 2rem;
+    margin-bottom: 0.75rem;
+   }
 `
 
 export const AddressForm = styled.div`
@@ -41,21 +32,21 @@ export const AddressForm = styled.div`
     'cep . .'
     'street street street'
     'number fullAddress fullAddress'
-    'neighborhood city state';
+    'neighborhood landMark state';
     grid-template-columns: 200px 1fr;
-    grid-gap: 16px 12px;
 `
 
 interface InputProps {
-    gridArea: 'cep' | 'street' | 'number' | 'fullAddress' | 'neighborhood' | 'city' | 'state'
+    gridArea?: 'cep' | 'street' | 'number' | 'fullAddress' | 'neighborhood' | 'landMark' | 'state'
 }
 
 export const InputContainer = styled.div<InputProps>`
-    grid-area: ${(props) => props.gridArea};
+    grid-area: ${({ gridArea }) => gridArea ? gridArea : 'none'};
     display: flex;
     flex-direction: column;
 
-    gap: 0.25rem;
+    margin-block: 0.25rem;
+    margin-right: 0.5rem;
 `
 
 export const Input = styled.input`
@@ -64,12 +55,8 @@ export const Input = styled.input`
     padding-left: 0.25rem;
 `
 
-export const PaymentSection = styled.div`
-    margin-top: 2rem;
-`
-
 export const Error = styled.span`
-    color: ${({theme}) => theme.error};
+    color: ${({ theme }) => theme.error};
     font-size: 0.75rem;
 `;
 
@@ -88,7 +75,7 @@ export const PaymentOptionsRadio = styled(RadioGroup.Item)`
     padding-left: 0.75rem;
     gap: 0.5rem;
 
-    background: ${({theme}) => theme["base-card"]};
+    background: ${({ theme }) => theme["base-card"]};
 
     font-size: 0.875rem;
 
@@ -109,9 +96,7 @@ export const ItemsContainer = styled.div`
     overflow-y: scroll;
 `
 
-export const CheckoutContainer = styled.div`
-    margin-top: 2rem;
-
+export const CheckoutContainer = styled(InformationContainer)`
     div {
         display: flex;
         flex-direction: row;
