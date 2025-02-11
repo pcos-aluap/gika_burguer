@@ -3,6 +3,7 @@ import { CartItemCard } from "../../components/cart-item-card"
 import { Bank, CreditCard, Money, PixLogo } from "@phosphor-icons/react"
 import { Controller, useForm } from "react-hook-form"
 import { z } from "zod"
+import { debounce } from 'lodash'
 import { zodResolver } from "@hookform/resolvers/zod"
 import {
     AddressForm,
@@ -23,7 +24,7 @@ import {
     from "./styles"
 import { getAddressByCEP } from "../../api/utils/search-cep"
 import * as RadioGroup from "@radix-ui/react-radio-group"
-import { useState } from "react"
+import { useCallback, useEffect, useState } from "react"
 import { PriceFormater } from "../../utils/price-formater"
 
 const cepValidationRegex = new RegExp(`\d{5}-\d{3}`)
@@ -56,6 +57,7 @@ export function Cart() {
     }, 0)
     const shippingFee = 3;
 
+    const [shouldShowChangeContainer, setShouldShowChangeContainer] = useState(false)
     const [needsChange, setNeedsChange] = useState(true)
 
     const {
@@ -64,6 +66,7 @@ export function Cart() {
         setValue,
         setFocus,
         handleSubmit,
+        clearErrors,
         control,
         setError,
         formState: { errors }
@@ -71,35 +74,37 @@ export function Cart() {
         resolver: zodResolver(newOrderFormSchema),
     })
 
-    let paymentMethod = watch('paymentMethod')
-    let shouldShowChangeContainer = paymentMethod === 'cash'
+    const paymentMethod = watch('paymentMethod')
 
-    const handleFindAddress = (e: React.FocusEvent<HTMLInputElement>) => {
-        const cep = e.target.value
+    const handleFindAddress = useCallback(
+        debounce(async (e: React.FocusEvent<HTMLInputElement>) => {
+          const cep = e.target.value;
+        
+          clearErrors('cep')
 
-        getAddressByCEP(cep).then((res) => {
-            setValue('street', res.street)
-            setValue('neighborhood', res.neighborhood)
-
-            setFocus('number')
-        }).catch(() => {
-            setError('cep', {
-                message: 'CEP inválido'
-            })
-        })
-    }
+          try {
+            const res = await getAddressByCEP(cep);
+            setValue('street', res.street);
+            setValue('neighborhood', res.neighborhood);
+            setFocus('number');
+          } catch {
+            setError('cep', { message: 'CEP inválido' });
+          }
+        }, 500),
+        []
+    )
 
     const handleFormatPhoneNumber = (event: React.ChangeEvent<HTMLInputElement>) => {
-        const cleaned = event.target.value.replace(/\D/g, '')
+        const phoneNumberToBeFormatted = event.target.value.replace(/\D/g, '')
 
-        if (cleaned.length <= 2) {
-            setValue('phone', `(${cleaned}`)
+        if (phoneNumberToBeFormatted.length <= 2) {
+            setValue('phone', `(${phoneNumberToBeFormatted}`)
         }
-        else if (cleaned.length <= 6) {
-            setValue('phone', `(${cleaned.slice(0, 2)}) ${cleaned.slice(2)}`)
+        else if (phoneNumberToBeFormatted.length <= 6) {
+            setValue('phone', `(${phoneNumberToBeFormatted.slice(0, 2)}) ${phoneNumberToBeFormatted.slice(2)}`)
         }
         else {
-            setValue('phone', `(${cleaned.slice(0, 2)}) ${cleaned.slice(2, 7)}-${cleaned.slice(7, 11)}`)
+            setValue('phone', `(${phoneNumberToBeFormatted.slice(0, 2)}) ${phoneNumberToBeFormatted.slice(2, 7)}-${phoneNumberToBeFormatted.slice(7, 11)}`)
         }
     }
 
@@ -111,9 +116,9 @@ export function Cart() {
     }
 
     const handleFormatChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        const cleaned = event.target.value.replace(/\D/g, '')
+        const changeToBeFormated = event.target.value.replace(/\D/g, '')
 
-        const formatedValue = PriceFormater(parseFloat(cleaned) / 100)
+        const formatedValue = PriceFormater(parseFloat(changeToBeFormated) / 100)
         setValue('change', formatedValue)
     }
 
@@ -121,6 +126,10 @@ export function Cart() {
         console.log('aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa')
         console.log(data)
     }
+
+    useEffect(() => {
+        setShouldShowChangeContainer(paymentMethod === 'cash')
+    }, [paymentMethod])
 
     return (
         <Container id="order" onSubmit={handleSubmit(handleOrderCheckout)}>
@@ -338,3 +347,4 @@ export function Cart() {
         </Container>
     )
 }
+
