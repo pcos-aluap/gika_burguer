@@ -6,6 +6,7 @@ import { z } from "zod"
 import { zodResolver } from "@hookform/resolvers/zod"
 import {
     AddressForm,
+    ChangeContainer,
     CheckoutButton,
     CheckoutContainer,
     Container,
@@ -16,9 +17,14 @@ import {
     ItemsContainer,
     PaymentOptionsContainer,
     PaymentOptionsRadio,
+    RadioIndicator,
+    RadioItemHasChange,
 }
     from "./styles"
 import { getAddressByCEP } from "../../api/utils/search-cep"
+import * as RadioGroup from "@radix-ui/react-radio-group"
+import { useState } from "react"
+import { PriceFormater } from "../../utils/price-formater"
 
 const cepValidationRegex = new RegExp(`\d{5}-\d{3}`)
 
@@ -36,22 +42,24 @@ const newOrderFormSchema = z.object({
     paymentMethod: z.enum(['credit', 'debit', 'pix', 'cash'], {
         invalid_type_error: 'Informe um método de pagamento',
     }),
-    change: z.number().optional(),
+    change: z.string().optional(),
 })
 
 export type newOrderFormInputs = z.infer<typeof newOrderFormSchema>
 
 export function Cart() {
     const { cartState } = useCart()
+    const cartIsEmpty = cartState.length <= 0
 
     const totalItemsPrice = cartState.reduce((previousValue, currentItem) => {
         return (previousValue += currentItem.menuItem.cost * currentItem.quantity)
     }, 0)
     const shippingFee = 3;
 
-    const cartIsEmpty = cartState.length <= 0
+    const [needsChange, setNeedsChange] = useState(true)
 
     const {
+        watch,
         register,
         setValue,
         setFocus,
@@ -62,6 +70,9 @@ export function Cart() {
     } = useForm<newOrderFormInputs>({
         resolver: zodResolver(newOrderFormSchema),
     })
+
+    let paymentMethod = watch('paymentMethod')
+    let shouldShowChangeContainer = paymentMethod === 'cash'
 
     const handleFindAddress = (e: React.FocusEvent<HTMLInputElement>) => {
         const cep = e.target.value
@@ -78,18 +89,33 @@ export function Cart() {
         })
     }
 
-    const handleformatPhoneNumber = (event: React.ChangeEvent<HTMLInputElement>) => {
-        const cleaned = event.target.value.replace(/\D/g, '');
+    const handleFormatPhoneNumber = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const cleaned = event.target.value.replace(/\D/g, '')
 
         if (cleaned.length <= 2) {
             setValue('phone', `(${cleaned}`)
         }
-        if (cleaned.length <= 6) {
+        else if (cleaned.length <= 6) {
             setValue('phone', `(${cleaned.slice(0, 2)}) ${cleaned.slice(2)}`)
         }
-        setValue('phone', `(${cleaned.slice(0, 2)}) ${cleaned.slice(2, 7)}-${cleaned.slice(7, 11)}`)
+        else {
+            setValue('phone', `(${cleaned.slice(0, 2)}) ${cleaned.slice(2, 7)}-${cleaned.slice(7, 11)}`)
+        }
     }
 
+    const handleNeedChange = (value: string) => {
+        if(value == 'true'){
+            setNeedsChange(true)
+            setFocus('change')
+        }
+    }
+
+    const handleFormatChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const cleaned = event.target.value.replace(/\D/g, '')
+
+        const formatedValue = PriceFormater(parseFloat(cleaned) / 100)
+        setValue('change', formatedValue)
+    }
 
     function handleOrderCheckout(data: any) {
         console.log('aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa')
@@ -113,9 +139,10 @@ export function Cart() {
                     </InputContainer>
                     <InputContainer>
                         <Input
+                        type="tel"
                             placeholder="Telefone"
                             {...register('phone')}
-                            onChange={handleformatPhoneNumber}
+                            onChange={handleFormatPhoneNumber}
                         />
                         {
                             errors.phone &&
@@ -237,6 +264,31 @@ export function Cart() {
                             )
                         }}
                     />
+                    <ChangeContainer shouldBeShown={shouldShowChangeContainer}>
+                        <p>Precisa de troco?</p>
+                        <RadioGroup.Root defaultValue="true" onValueChange={handleNeedChange}>
+                            <div>
+                                <RadioItemHasChange id="radio-change-yes" value="true">
+                                    <RadioIndicator />
+                                </RadioItemHasChange>
+                                <label htmlFor="radio-change-yes">Sim</label>
+                            </div>
+                            <div>
+                                <RadioItemHasChange id="radio-change-no" value="false">
+                                    <RadioIndicator />
+                                </RadioItemHasChange>
+                                <label htmlFor="radio-change-no">Não</label>
+                            </div>
+                        </RadioGroup.Root>
+                        <p>Troco para:</p>
+                        <Input
+                            prefix="R$"
+                            placeholder="R$ 0,00"
+                            disabled={!needsChange}
+                            {...register('change')}
+                            onChange={handleFormatChange}
+                        />
+                    </ChangeContainer>
                     {
                         errors.paymentMethod &&
                         <Error>{errors.paymentMethod?.message}</Error>

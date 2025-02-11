@@ -12,4 +12,5 @@ export const defaultTheme = {
     'base-text': '#574F4D',
     'base-label': '#8D8686',
     'base-card': '#F3F2F2',
+    'base-lighter-card': '#f9f9f9',
 };
