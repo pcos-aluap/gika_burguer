@@ -7,6 +7,7 @@ import { QueryClientProvider } from "@tanstack/react-query"
 import { queryClient } from "./lib/react-query"
 import { DetailsModalContextProvider } from "./contexts/details-modal-provider"
 import { CartContextProvider } from "./contexts/cart-provider"
+import { BottomMenu } from "./components/bottom-menu"
 
 export default function App() {
     return (
@@ -17,6 +18,7 @@ export default function App() {
                         <DetailsModalContextProvider>
                             <GlobalStyle />
                             <Outlet />
+                            <BottomMenu />
                         </DetailsModalContextProvider>
                     </MenuContextProvider>
                 </CartContextProvider>
