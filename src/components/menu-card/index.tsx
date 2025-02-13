@@ -7,6 +7,9 @@ import { CardsAddToCartButton } from "./components/card-add-to-cart-button"
 import { QuantityInput } from "../../elements/quantity-input"
 import { PriceFormater } from "../../utils/price-formater"
 import { ShowAddToCartFormButton } from "../../elements/add-to-cart-button"
+import * as z from 'zod'
+import { Controller, SubmitHandler, useForm } from "react-hook-form"
+import { zodResolver } from "@hookform/resolvers/zod"
 
 interface MenuItemCardProps {
     id: number
@@ -18,9 +21,22 @@ interface MenuItemCardProps {
     categoryId: number
 }
 
+const addMenuItemFromCardToCartFormSchema = z.object({
+    quantity: z.number()
+})
+
+type AddMenuItemFromCardToCartFormInput = z.infer<typeof addMenuItemFromCardToCartFormSchema>
+
 export function MenuCard({ name, description, price, available, id }: MenuItemCardProps) {
     const { openModal } = useDetailsModal()
     const { addOrUpdateItem, cartState } = useCart()
+
+    const { control, setValue, getValues, handleSubmit } = useForm<AddMenuItemFromCardToCartFormInput>({
+        resolver: zodResolver(addMenuItemFromCardToCartFormSchema),
+        defaultValues: {
+            quantity: 1
+        }
+    })
 
     const [quantityOfItems, setQuantityOfIems] = useState<number>(0)
     const [isFormVisible, setIsFormVisible] = useState(false)
@@ -43,20 +59,21 @@ export function MenuCard({ name, description, price, available, id }: MenuItemCa
         setIsFormVisible(true)
     }
 
-    function incrementQuantityOfItems() {
-        setQuantityOfIems(state => state += 1)
-    }
-
-    function decrementQuantityOfItems() {
-        if (quantityOfItems > 1) {
-            setQuantityOfIems(state => state -= 1)
+    const handleDecrementQuantity = () => {
+        const quantityAtual = getValues('quantity')
+        if (quantityAtual >= 1) {
+            setValue('quantity', quantityAtual - 1)
         }
         else {
             setIsFormVisible(false)
         }
     }
 
-    function addItemTocart() {
+    const handleIncrementQuantity = () => {
+        setValue('quantity', getValues('quantity') + 1)
+    }
+
+    const addItemTocart = () => {
         addOrUpdateItem({
             menuItem: {
                 id: id,
@@ -71,6 +88,10 @@ export function MenuCard({ name, description, price, available, id }: MenuItemCa
         })
 
         setAddToCartButtonHasBeenClicked(true)
+
+        setTimeout(() => {
+            setAddToCartButtonHasBeenClicked(false)
+        }, 3000)
     }
 
     useEffect(() => {
@@ -86,13 +107,21 @@ export function MenuCard({ name, description, price, available, id }: MenuItemCa
             {
                 isFormVisible ?
                     (
-                        <FormContainer data-testid='add-to-cart-card-form'>
-                            <QuantityInput
-                                quantity={quantityOfItems}
-                                incrementQuantity={incrementQuantityOfItems}
-                                decrementQuantity={decrementQuantityOfItems}
+                        <FormContainer onSubmit={handleSubmit(addItemTocart)} data-testid='add-to-cart-card-form'>
+                            <Controller
+                                control={control}
+                                name='quantity'
+                                render={({ field }) => {
+                                    return (
+                                        <QuantityInput
+                                            quantity={field.value}
+                                            incrementQuantity={handleIncrementQuantity}
+                                            decrementQuantity={handleDecrementQuantity}
+                                        />
+                                    )
+                                }}
                             />
-                            <CardsAddToCartButton addToCart={addItemTocart} hasBeenClicked={addToCartButtonHasBeenClicked} />
+                            <CardsAddToCartButton hasBeenClicked={addToCartButtonHasBeenClicked} addItemToCart={addItemTocart} />
                         </FormContainer>
                     ) :
                     (
@@ -105,3 +134,5 @@ export function MenuCard({ name, description, price, available, id }: MenuItemCa
         </Grid>
     )
 }
+
+

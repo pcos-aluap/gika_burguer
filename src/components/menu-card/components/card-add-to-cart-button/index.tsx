@@ -2,16 +2,16 @@ import { CheckFat, ShoppingCartSimple } from "@phosphor-icons/react";
 import styled from "styled-components";
 
 interface AddToCartButtonProps {
-    addToCart: () => void
+    addItemToCart: () => void
     hasBeenClicked: boolean
 }
-export function CardsAddToCartButton({ addToCart, hasBeenClicked }: AddToCartButtonProps) {
-    function handleAddToCart(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) {
-        e.stopPropagation();
-        addToCart();
+export function CardsAddToCartButton({ addItemToCart, hasBeenClicked }: AddToCartButtonProps) {
+    function addItem(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) {
+        e.stopPropagation()
+        addItemToCart
     }
     return (
-        <Container type="button" disabled={hasBeenClicked} data-testid='add-item-to-cart' onClick={handleAddToCart}>
+        <Container type="submit" disabled={hasBeenClicked} data-testid='add-item-to-cart' onClick={addItem}>
             {
                 hasBeenClicked ?
                     <CheckFat weight="fill" data-testid='check-fat-icon' /> :
