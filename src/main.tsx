@@ -5,6 +5,7 @@ import App from './App'
 import { Menu } from './pages/menu'
 import { enableMSW } from './api/mocks/index'
 import { Cart } from './pages/cart/to-desktop'
+import { CartItemsPage } from './pages/cart/to-mobile/cart-items-page'
 
 const router = createBrowserRouter([
   {
@@ -18,6 +19,10 @@ const router = createBrowserRouter([
       {
         path: '/cart',
         element: <Cart />
+      },
+      {
+        path: '/cart-mobile',
+        element: <CartItemsPage />
       }
     ]
   }
