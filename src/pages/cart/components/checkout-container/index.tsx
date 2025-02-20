@@ -4,6 +4,7 @@ import { InformationContainer } from "../../to-desktop/styles";
 import { FormatToBRL } from "../../../../utils/price-formater";
 import { useMediaQuery } from "react-responsive";
 import { Link } from "react-router-dom";
+import { PrimaryButton } from "../../../../components/primary-button";
 
 export function CheckoutComponent() {
     const { totalItemsPrice, cartState } = useCart()
@@ -32,7 +33,7 @@ export function CheckoutComponent() {
             {
                 isMobile ?
                 <ContinueOrder to={'/cart/order-info'}>Continuar Compra</ContinueOrder> :
-                <CheckoutButton type='submit' form="order" disabled={cartIsEmpty}>Concluir compra</CheckoutButton>
+                <PrimaryButton type='submit' form="order" disabled={cartIsEmpty}>Concluir compra</PrimaryButton>
             }
             
         </CheckoutContainer>
@@ -46,33 +47,6 @@ const CheckoutContainer = styled(InformationContainer)`
         flex-direction: row;
 
         justify-content: space-between;
-    }
-`
-
-const CheckoutButton = styled.button`
-    width: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-
-    padding: 0.5rem 1rem;
-
-    font-family: "Mukta Vaani", sans-serif;
-    color: ${(props) => props.theme.white};
-    font-weight: 600;
-    text-transform: uppercase;
-
-    border: none;
-    border-radius: 4px;
-
-    margin-top: 1rem;
-
-    background: ${(props) => props.theme["cordovan-500"]};
-
-    transition: 0.2s;
-
-    &:focus {
-        background: ${(props) => props.theme["cordovan-400"]};
     }
 `
 

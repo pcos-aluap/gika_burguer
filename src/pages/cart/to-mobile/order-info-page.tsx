@@ -5,6 +5,7 @@ import { PaymentInformationComponent } from "../components/payment-container"
 import { useFormContext } from "react-hook-form"
 import { NewOrderFormInputs } from "../cart-form"
 import { useEffect, useState } from "react"
+import { PrimaryButton } from "../../../components/primary-button"
 
 export function OrderInfoPage() {
     const { watch } = useFormContext<NewOrderFormInputs>()
@@ -19,8 +20,8 @@ export function OrderInfoPage() {
         <Container>
             <PersonalInformationComponent />
             <AddressInformationComponent />
-            <PaymentInformationComponent shouldShowChangeContainer={shouldShowChangeContainer} orderTotal={20} />
-            <CheckoutButton type='submit' form="order" >Concluir compra</CheckoutButton>
+            <PaymentInformationComponent shouldShowChangeContainer={shouldShowChangeContainer} />
+            <PrimaryButton type='submit' form="order" >Concluir compra</PrimaryButton>
         </Container>
     )
 
@@ -32,31 +33,4 @@ const Container = styled.div`
 
     margin: 1rem;
     margin-bottom: 3rem;
-`
-
-const CheckoutButton = styled.button`
-    width: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-
-    padding: 0.5rem 1rem;
-
-    font-family: "Mukta Vaani", sans-serif;
-    color: ${(props) => props.theme.white};
-    font-weight: 600;
-    text-transform: uppercase;
-
-    border: none;
-    border-radius: 4px;
-
-    margin-top: 1rem;
-
-    background: ${(props) => props.theme["cordovan-500"]};
-
-    transition: 0.2s;
-
-    &:focus {
-        background: ${(props) => props.theme["cordovan-400"]};
-    }
 `
