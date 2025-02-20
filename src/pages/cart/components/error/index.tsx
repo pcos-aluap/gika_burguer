@@ -4,7 +4,7 @@ interface InputErrorProps {
     errorMessage: string
 }
 export function InputError({ errorMessage }: InputErrorProps) {
-    return <span>{errorMessage}</span>
+    return <Error>{errorMessage}</Error>
 }
 
 export const Error = styled.span`
