@@ -9,24 +9,14 @@ import { ChangeModalForMobile } from "../change-modal-for-mobile"
 
 interface PaymentInformationComponentProps {
     shouldShowChangeContainer: boolean
-    orderTotal: number
 }
 
 export function PaymentInformationComponent({ shouldShowChangeContainer }: PaymentInformationComponentProps) {
     const { control, register, formState: { errors } } = useFormContext<NewOrderFormInputs>()
 
-    // const [needsChange, setNeedsChange] = useState(true)
-
-    // const handleNeedChange = (value: string) => {
-    //     if (value == 'true') {
-    //         setNeedsChange(true)
-    //         setFocus('change')
-    //     }
-    // }
-
     return (
         <>
-            <ChangeModalForMobile shouldShowModal={shouldShowChangeContainer} orderTotal={0} />
+            <ChangeModalForMobile shouldShowModal={shouldShowChangeContainer} />
             <InformationContainer>
                 <h2>Selecione a forma de pagamento</h2>
                 <Controller
@@ -70,30 +60,6 @@ export function PaymentInformationComponent({ shouldShowChangeContainer }: Payme
                         )
                     }}
                 />
-                {/* <ChangeContainer shouldBeShown={shouldShowChangeContainer}>
-                <p>Precisa de troco?</p>
-                <RadioGroup.Root defaultValue="true" onValueChange={handleNeedChange}>
-                    <div>
-                        <RadioItemHasChange id="radio-change-yes" value="true">
-                            <RadioIndicator />
-                        </RadioItemHasChange>
-                        <label htmlFor="radio-change-yes">Sim</label>
-                    </div>
-                    <div>
-                        <RadioItemHasChange id="radio-change-no" value="false">
-                            <RadioIndicator />
-                        </RadioItemHasChange>
-                        <label htmlFor="radio-change-no">Não</label>
-                    </div>
-                </RadioGroup.Root>
-                <p>Troco para:</p>
-                <CartInput
-                    name={"change"}
-                    placeholder={"R$ 0,00"}
-                    disabled={!needsChange}
-                    onChange={handleFormatChange}
-                />
-            </ChangeContainer> */}
                 {
                     errors.paymentMethod &&
                     <InputError errorMessage={errors.paymentMethod.message!} />

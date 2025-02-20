@@ -29,7 +29,7 @@ export function Cart() {
                 <PersonalInformationComponent />
                 <AddressInformationComponent />
                 <PaymentInformationComponent
-                    shouldShowChangeContainer={shouldShowChangeContainer} orderTotal={20}                    
+                    shouldShowChangeContainer={shouldShowChangeContainer}                   
                 />
             </div>
             <div>

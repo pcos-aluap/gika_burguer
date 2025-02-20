@@ -126,7 +126,7 @@ const Price = styled.p`
         font-weight: bolder;
     }
 
-    @media (width > 768px) {
+    @media (width < 768px) {
         font-size: 0.5rem;
 
         span {

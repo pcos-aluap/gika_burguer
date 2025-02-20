@@ -6,12 +6,9 @@ import { useMediaQuery } from "react-responsive";
 import { Link } from "react-router-dom";
 
 export function CheckoutComponent() {
-    const { cartState } = useCart()
+    const { totalItemsPrice, cartState } = useCart()
 
     const cartIsEmpty = cartState.length <= 0
-    const totalItemsPrice = cartState.reduce((previousValue, currentItem) => {
-        return (previousValue += currentItem.menuItem.cost * currentItem.quantity)
-    }, 0)
     const shippingFee = 3
 
     const isMobile = useMediaQuery({

@@ -1,18 +1,19 @@
 import styled from "styled-components"
 import { CartInput } from "../input"
-import { PriceFormater } from "../../../../utils/price-formater"
+import { FormatToBRL, PriceFormater } from "../../../../utils/price-formater"
 import { useFormContext } from "react-hook-form"
 import { NewOrderFormInputs } from "../../cart-form"
 import { SecondaryButton } from "../../../../components/secondary-button"
 import { PrimaryButton } from "../../../../components/primary-button"
 import { useEffect, useState } from "react"
+import { useCart } from "../../../../hooks/useCart"
 
 interface ChangeModalForMobileProps {
     shouldShowModal: boolean
-    orderTotal: number
 }
 
-export function ChangeModalForMobile({ shouldShowModal, orderTotal }: ChangeModalForMobileProps) {
+export function ChangeModalForMobile({ shouldShowModal }: ChangeModalForMobileProps) {
+    const { totalItemsPrice } = useCart()
     const { setValue, watch } = useFormContext<NewOrderFormInputs>()
 
     const [hasChange, setHasChange] = useState(false)
@@ -28,12 +29,12 @@ export function ChangeModalForMobile({ shouldShowModal, orderTotal }: ChangeModa
     }
 
     useEffect(() => {
-
-        if(change != '0,00'){
+        if(change != undefined || change != '0,00'){
             console.log(change)
             setHasChange(true)
         }
         else{
+            console.log('does not have change but change shows ' + change)
             setHasChange(false)
         }
     }, [change, hasChange])
@@ -43,7 +44,7 @@ export function ChangeModalForMobile({ shouldShowModal, orderTotal }: ChangeModa
             <Background>
                 <ModalContainer>
                     <Title>Você precisa de troco?</Title>
-                    <SubTitle>O total do seu pedido foi de <span>{orderTotal}</span></SubTitle>
+                    <SubTitle>O total do seu pedido foi de <span>{FormatToBRL(totalItemsPrice)}</span></SubTitle>
                     <CartInput
                         name={"change"}
                         placeholder={"R$ 0,00"}
@@ -56,7 +57,7 @@ export function ChangeModalForMobile({ shouldShowModal, orderTotal }: ChangeModa
         )
     }
     else {
-
+        return <></>
     }
 }
 

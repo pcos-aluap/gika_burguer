@@ -1,9 +1,10 @@
-import { createContext, ReactNode, useEffect, useReducer } from "react"
+import { createContext, ReactNode, useEffect, useReducer, useState } from "react"
 import { CartItem, cartReducer } from "../reducers/cart/reducer"
 import { addOrUpdateItemAction, removeItemAction } from "../reducers/cart/actions"
 
 interface CartContextType {
     cartState: CartItem[]
+    totalItemsPrice: number
     addOrUpdateItem: (cartItem: CartItem) => void
     removeItem: (cartItemId: CartItem['menuItem']['id']) => void
 }
@@ -28,6 +29,7 @@ export function CartContextProvider({ children }: CartContextProviderProps){
             return cartState
         }
     );
+    const [ totalItemsPrice, setItemsTotalPrice ] = useState(0)
 
     function addOrUpdateItem(cartItem: CartItem) {
         dispatch(addOrUpdateItemAction(cartItem));
@@ -36,6 +38,14 @@ export function CartContextProvider({ children }: CartContextProviderProps){
     function removeItem(cartItemId: CartItem['menuItem']['id']) {
         dispatch(removeItemAction(cartItemId));
     }
+
+    useEffect(() => {
+        let totalcost = cartState.reduce((previousValue, currentItem) => {
+            return (previousValue += currentItem.menuItem.cost * currentItem.quantity)
+        }, 0)
+
+        setItemsTotalPrice(totalcost)
+    }, [cartState])
 
     useEffect(() => {
         if(cartState) {
@@ -48,6 +58,7 @@ export function CartContextProvider({ children }: CartContextProviderProps){
         <CartContext.Provider
             value={{
                 cartState,
+                totalItemsPrice,
                 addOrUpdateItem,
                 removeItem
             }}
