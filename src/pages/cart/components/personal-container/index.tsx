@@ -1,6 +1,6 @@
 import { useFormContext } from "react-hook-form";
 import { InformationContainer } from "../../to-desktop/styles";
-import { NewOrderFormInputs } from "../../to-desktop";
+import { NewOrderFormInputs } from "../../cart-form";
 import { CartInput } from "../input";
 
 export function PersonalInformationComponent() {

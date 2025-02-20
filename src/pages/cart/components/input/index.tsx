@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { NewOrderFormInputs } from "../../to-desktop";
+import { NewOrderFormInputs } from "../../cart-form";
 import { FieldError, useFormContext } from "react-hook-form";
 import { InputError } from "../error";
 
@@ -52,5 +52,13 @@ const Input = styled.input`
     height: 3rem;
 
     padding-left: 0.25rem;
+
+    @media (width < 768px) {
+        height: 1.75rem;
+
+        ::placeholder {
+            font-size: 0.75rem;
+        }
+    }
 `
 

@@ -2,6 +2,8 @@ import styled from "styled-components";
 import { useCart } from "../../../../hooks/useCart";
 import { InformationContainer } from "../../to-desktop/styles";
 import { FormatToBRL } from "../../../../utils/price-formater";
+import { useMediaQuery } from "react-responsive";
+import { Link } from "react-router-dom";
 
 export function CheckoutComponent() {
     const { cartState } = useCart()
@@ -11,6 +13,10 @@ export function CheckoutComponent() {
         return (previousValue += currentItem.menuItem.cost * currentItem.quantity)
     }, 0)
     const shippingFee = 3
+
+    const isMobile = useMediaQuery({
+        query: '(max-width: 768px)'
+    })
 
     return (
         <CheckoutContainer>
@@ -26,12 +32,18 @@ export function CheckoutComponent() {
                 <strong>Total</strong>
                 <strong>{FormatToBRL(totalItemsPrice + shippingFee)}</strong>
             </div>
-            <CheckoutButton type='submit' form="order" disabled={cartIsEmpty}>Concluir compra</CheckoutButton>
+            {
+                isMobile ?
+                <ContinueOrder to={'/cart/order-info'}>Continuar Compra</ContinueOrder> :
+                <CheckoutButton type='submit' form="order" disabled={cartIsEmpty}>Concluir compra</CheckoutButton>
+            }
+            
         </CheckoutContainer>
     )
 }
 
 const CheckoutContainer = styled(InformationContainer)`
+    margin-top: 3rem;
     div {
         display: flex;
         flex-direction: row;
@@ -57,6 +69,34 @@ const CheckoutButton = styled.button`
     border-radius: 4px;
 
     margin-top: 1rem;
+
+    background: ${(props) => props.theme["cordovan-500"]};
+
+    transition: 0.2s;
+
+    &:focus {
+        background: ${(props) => props.theme["cordovan-400"]};
+    }
+`
+
+const ContinueOrder = styled(Link)`
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    padding: 0.5rem 1rem;
+
+    font-family: "Mukta Vaani", sans-serif;
+    color: ${(props) => props.theme.white};
+    font-weight: 600;
+    text-transform: uppercase;
+    text-decoration: none;
+
+    border: none;
+    border-radius: 4px;
+
+    margin-top: 2rem;
 
     background: ${(props) => props.theme["cordovan-500"]};
 

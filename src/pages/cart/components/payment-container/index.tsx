@@ -1,82 +1,76 @@
 import { Controller, useFormContext } from "react-hook-form"
-import { NewOrderFormInputs } from "../../to-desktop"
+import { NewOrderFormInputs } from "../../cart-form"
 import { Bank, CreditCard, Money, PixLogo } from "@phosphor-icons/react"
 import * as RadioGroup from "@radix-ui/react-radio-group"
-import { useState } from "react"
-import { PriceFormater } from "../../../../utils/price-formater"
-import { CartInput } from "../input"
 import { InputError } from "../error"
 import styled from "styled-components"
 import { InformationContainer } from "../../to-desktop/styles"
+import { ChangeModalForMobile } from "../change-modal-for-mobile"
 
 interface PaymentInformationComponentProps {
     shouldShowChangeContainer: boolean
+    orderTotal: number
 }
 
 export function PaymentInformationComponent({ shouldShowChangeContainer }: PaymentInformationComponentProps) {
-    const { control, register, setFocus, setValue, formState: { errors } } = useFormContext<NewOrderFormInputs>()
+    const { control, register, formState: { errors } } = useFormContext<NewOrderFormInputs>()
 
-    const [needsChange, setNeedsChange] = useState(true)
+    // const [needsChange, setNeedsChange] = useState(true)
 
-    const handleNeedChange = (value: string) => {
-        if (value == 'true') {
-            setNeedsChange(true)
-            setFocus('change')
-        }
-    }
-
-    const handleFormatChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        const changeToBeFormated = event.target.value.replace(/\D/g, '')
-
-        const formatedValue = PriceFormater(parseFloat(changeToBeFormated) / 100)
-        setValue('change', formatedValue)
-    }
+    // const handleNeedChange = (value: string) => {
+    //     if (value == 'true') {
+    //         setNeedsChange(true)
+    //         setFocus('change')
+    //     }
+    // }
 
     return (
-        <InformationContainer>
-            <h2>Selecione a forma de pagamento</h2>
-            <Controller
-                control={control}
-                name="paymentMethod"
-                render={({ field }) => {
-                    return (
-                        <PaymentOptionsContainer
-                            onValueChange={field.onChange}
-                            value={field.value}
-                        >
-                            <PaymentOptionsRadio
-                                value="credit"
-                                {...register('paymentMethod')}
+        <>
+            <ChangeModalForMobile shouldShowModal={shouldShowChangeContainer} orderTotal={0} />
+            <InformationContainer>
+                <h2>Selecione a forma de pagamento</h2>
+                <Controller
+                    control={control}
+                    name="paymentMethod"
+                    render={({ field }) => {
+                        return (
+                            <PaymentOptionsContainer
+                                onValueChange={field.onChange}
+                                value={field.value}
                             >
-                                <CreditCard size={20} />
-                                Cartão de Crédito
-                            </PaymentOptionsRadio>
-                            <PaymentOptionsRadio
-                                value="debit"
-                                {...register('paymentMethod')}
-                            >
-                                <Bank size={20} />
-                                Cartão de débito
-                            </PaymentOptionsRadio>
-                            <PaymentOptionsRadio
-                                value="pix"
-                                {...register('paymentMethod')}
-                            >
-                                <PixLogo size={20} />
-                                Pix
-                            </PaymentOptionsRadio>
-                            <PaymentOptionsRadio
-                                value="cash"
-                                {...register('paymentMethod')}
-                            >
-                                <Money size={20} />
-                                Dinheiro
-                            </PaymentOptionsRadio>
-                        </PaymentOptionsContainer>
-                    )
-                }}
-            />
-            <ChangeContainer shouldBeShown={shouldShowChangeContainer}>
+                                <PaymentOptionsRadio
+                                    value="credit"
+                                    {...register('paymentMethod')}
+                                >
+                                    <CreditCard size={20} />
+                                    Cartão de Crédito
+                                </PaymentOptionsRadio>
+                                <PaymentOptionsRadio
+                                    value="debit"
+                                    {...register('paymentMethod')}
+                                >
+                                    <Bank size={20} />
+                                    Cartão de débito
+                                </PaymentOptionsRadio>
+                                <PaymentOptionsRadio
+                                    value="pix"
+                                    {...register('paymentMethod')}
+                                >
+                                    <PixLogo size={20} />
+                                    Pix
+                                </PaymentOptionsRadio>
+                                <PaymentOptionsRadio
+                                    value="cash"
+                                    {...register('paymentMethod')}
+                                >
+                                    <Money size={20} />
+                                    Dinheiro
+                                </PaymentOptionsRadio>
+                            </PaymentOptionsContainer>
+                        )
+                    }}
+                />
+                {/* <ChangeContainer shouldBeShown={shouldShowChangeContainer}>
                 <p>Precisa de troco?</p>
                 <RadioGroup.Root defaultValue="true" onValueChange={handleNeedChange}>
                     <div>
@@ -99,12 +93,13 @@ export function PaymentInformationComponent({ shouldShowChangeContainer }: Payme
                     disabled={!needsChange}
                     onChange={handleFormatChange}
                 />
-            </ChangeContainer>
-            {
-                errors.paymentMethod &&
-                <InputError errorMessage={errors.paymentMethod.message!} />
-            }
-        </InformationContainer>
+            </ChangeContainer> */}
+                {
+                    errors.paymentMethod &&
+                    <InputError errorMessage={errors.paymentMethod.message!} />
+                }
+            </InformationContainer>
+        </>
     )
 }
 
@@ -112,6 +107,16 @@ const PaymentOptionsContainer = styled(RadioGroup.Root)`
     display: flex;
     width: 45rem;
     justify-content: space-around;
+
+    @media (width < 768px) {
+        flex-direction: column;
+        align-items: center;
+        width: auto;
+
+        gap: 0.5rem;
+
+        margin: auto;
+    }
 `
 
 const PaymentOptionsRadio = styled(RadioGroup.Item)`
@@ -204,7 +209,5 @@ const RadioIndicator = styled(RadioGroup.Indicator)`
         height: 0.5rem;
         border-radius: 50%;
         background-color: ${({ theme }) => theme["cordovan-500"]};
-
-        z-index: 10;
     }
 `

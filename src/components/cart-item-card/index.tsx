@@ -69,6 +69,17 @@ const Container = styled.div`
 
         border-radius: 4px;
     }
+
+    @media (width < 768px) {
+        width: 100%;
+
+        grid-template-columns: 1fr 3rem;
+
+        img {
+            width: 3.5rem;
+            height: 3.5rem;
+        }
+    }
 `
 
 const Name = styled.h3`
@@ -83,6 +94,10 @@ const Name = styled.h3`
     white-space: nowrap;
     text-overflow: ellipsis;
     overflow: hidden;
+
+    @media (width < 768px) {
+        font-size: 1rem;
+    }
 `
 
 const RowContainer = styled.div`
@@ -90,6 +105,10 @@ const RowContainer = styled.div`
 
     display: grid;
     grid-template-columns: 6rem 5rem 3rem;
+
+    @media (width < 768px) {
+        grid-template-columns: 5rem 4rem 2rem;
+    }
 `
 
 const Price = styled.p`
@@ -105,6 +124,14 @@ const Price = styled.p`
         font-size: 1.2rem;
         color: ${(props) => props.theme["cordovan-500"]};
         font-weight: bolder;
+    }
+
+    @media (width > 768px) {
+        font-size: 0.5rem;
+
+        span {
+            font-size: 0.75rem;
+        }
     }
 `
 

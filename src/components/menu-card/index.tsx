@@ -8,7 +8,7 @@ import { QuantityInput } from "../../elements/quantity-input"
 import { PriceFormater } from "../../utils/price-formater"
 import { ShowAddToCartFormButton } from "../../elements/add-to-cart-button"
 import * as z from 'zod'
-import { Controller, SubmitHandler, useForm } from "react-hook-form"
+import { Controller, useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 
 interface MenuItemCardProps {

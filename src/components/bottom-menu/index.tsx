@@ -9,7 +9,7 @@ export function BottomMenu() {
             <Link to={'/'}>{({ isActive }) => (<House size={24} weight={isActive ? 'fill' : 'regular'} />)}</Link>
             <Link to={'/favorites'}>{({ isActive }) => (<Heart size={24} weight={isActive ? 'fill' : 'regular'} />)}</Link>
             <Link to={'/orders'}>{({ isActive }) => (<BookBookmark size={24} weight={isActive ? 'fill' : 'regular'} />)}</Link>
-            <Link to={'/cart-mobile'}>{({ isActive }) => (<ShoppingCartSimple size={24} weight={isActive ? 'fill' : 'regular'} />)}</Link>
+            <Link to={'/cart/mobile'}>{({ isActive }) => (<ShoppingCartSimple size={24} weight={isActive ? 'fill' : 'regular'} />)}</Link>
         </Container>
     )
 }

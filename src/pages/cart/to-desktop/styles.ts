@@ -20,4 +20,10 @@ export const InformationContainer = styled.section`
 
     margin-bottom: 0.75rem;
    }
+
+   @media (width < 768px) {
+    h2 {
+        font-size: 1rem;
+    }
+   }
 `

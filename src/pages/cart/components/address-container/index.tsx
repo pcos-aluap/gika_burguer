@@ -1,6 +1,6 @@
 import { useFormContext } from "react-hook-form";
 import { InformationContainer } from "../../to-desktop/styles";
-import { NewOrderFormInputs } from "../../to-desktop";
+import { NewOrderFormInputs } from "../../cart-form";
 import { useCallback } from "react";
 import { debounce } from "lodash";
 import { getAddressByCEP } from "../../../../api/utils/search-cep";
@@ -92,4 +92,10 @@ const AddressForm = styled.div`
     'number fullAddress fullAddress'
     'neighborhood landMark state';
     grid-template-columns: 200px 1fr;
+
+    @media (width < 768px) {
+        width: auto;
+        display: flex;
+        flex-direction: column;
+    }
 `

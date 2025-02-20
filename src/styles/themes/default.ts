@@ -6,6 +6,7 @@ export const defaultTheme = {
 
     'success': '#44cd08',
     'error': '#ff0707',
+    'disabled': '#808080',
 
     'base-title': '#272221',
     'base-subtitle': '#403937',

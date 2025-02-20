@@ -67,7 +67,7 @@ export function Header() {
                 <UsersMenuContainer>
                     {
                         !isMobile ?
-                            <LinkMenuIconButton data-testid='link-to-cart' to={`/cart`}>
+                            <LinkMenuIconButton data-testid='link-to-cart' to={`/cart/desktop`}>
                                 <ShoppingCartSimple />
                                 {
                                     cartState.length > 0 &&
