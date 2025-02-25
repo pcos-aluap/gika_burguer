@@ -14,6 +14,7 @@ export function ItemsContainerComponent() {
                 {
                     cartState.map((item) => (
                         <CartItemCard
+                            id={item.menuItem.id} 
                             key={item.menuItem.id}
                             name={item.menuItem.name}
                             image={item.menuItem.image}

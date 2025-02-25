@@ -4,25 +4,34 @@ import { Trash } from "@phosphor-icons/react"
 import aa from "../../assets/hamburguer.jpeg"
 import { PriceFormater } from "../../utils/price-formater"
 import { useState } from "react"
+import { useCart } from "../../hooks/useCart"
 
 interface CartItemCardProps {
+    id: number
     name: string
     image: string
     price: number
     quantity: number
 }
 
-export function CartItemCard({ name, image, quantity, price }: CartItemCardProps) {
+export function CartItemCard({ id, name, image, quantity, price }: CartItemCardProps) {
+    const { incrementItemsQuantity, decrementItemsQuantity, removeItem } = useCart()
     const [quantityOfItems, setQuantityOfIems] = useState<number>(quantity)
 
-    function incrementQuantityOfItems() {
-        setQuantityOfIems(state => state += 1);
+    function handleIncrementQuantityOfItems() {
+        setQuantityOfIems(state => state += 1)
+        incrementItemsQuantity(id)
     }
 
-    function decrementQuantityOfItems() {
+    function handleDecrementQuantityOfItems() {
         if (quantityOfItems > 1) {
             setQuantityOfIems(state => state -= 1);
+            decrementItemsQuantity(id)
         }
+    }
+
+    function handleRemoveItemFromCart() {
+        removeItem(id)
     }
 
     return (
@@ -35,10 +44,10 @@ export function CartItemCard({ name, image, quantity, price }: CartItemCardProps
                 </Price>
                 <QuantityInput 
                     quantity={quantityOfItems} 
-                    incrementQuantity={incrementQuantityOfItems} 
-                    decrementQuantity={decrementQuantityOfItems} 
+                    incrementQuantity={handleIncrementQuantityOfItems} 
+                    decrementQuantity={handleDecrementQuantityOfItems} 
                 />
-                <RemoveButton type="button"><Trash size={24} /></RemoveButton>
+                <RemoveButton type="button" onClick={handleRemoveItemFromCart}><Trash size={24} /></RemoveButton>
             </RowContainer>
         </Container>
     )

@@ -9,23 +9,41 @@ export interface CartItem {
 
 export function cartReducer(state: CartItem[], action: Actions) {
     switch (action.type) {
-        case ActionTypes.ADD_OR_UPDATE_ITEM:
+        case ActionTypes.ADD_ITEM:
             const itemAlreadyAdded = state.find((cartItem) => cartItem.menuItem.id === action.payload.item.menuItem.id)
 
             if (itemAlreadyAdded) {
                 state.map((cartItem) => {
                     if (cartItem.menuItem.id === action.payload.item.menuItem.id) {
-                        cartItem.quantity = action.payload.item.quantity;
-                        return state;
+                        cartItem.quantity = action.payload.item.quantity
+                        return state
                     }
                 })
-                return [...state];
+                return [...state]
             }
-            return [...state, action.payload.item];
-        
+            return [...state, action.payload.item]
+
+        case ActionTypes.INCREMENT_ITEMS_QUANTITY:
+            state.map((cartItem) => {
+                if (cartItem.menuItem.id == action.payload.menuItemId) {
+                    cartItem.quantity += 1
+                    return state
+                }
+            })
+            return [...state]
+
+        case ActionTypes.DECREMENT_ITEMS_QUANTITY:
+            state.map((cartItem) => {
+                if (cartItem.menuItem.id === action.payload.menuItemId) {
+                    cartItem.quantity -= 1
+                    return state
+                }
+            })
+            return [...state]
+
         case ActionTypes.REMOVE_ITEM:
             const stateWithOutRemovedItem = state.filter((cartItem) => cartItem.menuItem.id === action.payload.menuItemId)
-            return stateWithOutRemovedItem;
+            return stateWithOutRemovedItem
 
         default:
             return state;

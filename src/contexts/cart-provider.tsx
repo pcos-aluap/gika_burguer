@@ -1,11 +1,13 @@
 import { createContext, ReactNode, useEffect, useReducer, useState } from "react"
 import { CartItem, cartReducer } from "../reducers/cart/reducer"
-import { addOrUpdateItemAction, removeItemAction } from "../reducers/cart/actions"
+import { addItemAction, removeItemAction, decrementItemAction, incrementItemAction } from "../reducers/cart/actions"
 
 interface CartContextType {
     cartState: CartItem[]
     totalItemsPrice: number
-    addOrUpdateItem: (cartItem: CartItem) => void
+    addItem: (cartItem: CartItem) => void
+    incrementItemsQuantity: (cartItemId: CartItem['menuItem']['id']) => void
+    decrementItemsQuantity: (cartItemId: CartItem['menuItem']['id']) => void
     removeItem: (cartItemId: CartItem['menuItem']['id']) => void
 }
 
@@ -31,8 +33,16 @@ export function CartContextProvider({ children }: CartContextProviderProps){
     );
     const [ totalItemsPrice, setItemsTotalPrice ] = useState(0)
 
-    function addOrUpdateItem(cartItem: CartItem) {
-        dispatch(addOrUpdateItemAction(cartItem));
+    function addItem(cartItem: CartItem) {
+        dispatch(addItemAction(cartItem));
+    }
+
+    function incrementItemsQuantity(menuItemId: CartItem['menuItem']['id']){
+        dispatch(incrementItemAction(menuItemId))
+    }
+
+    function decrementItemsQuantity(menuItemId: CartItem['menuItem']['id']){
+        dispatch(decrementItemAction(menuItemId))
     }
 
     function removeItem(cartItemId: CartItem['menuItem']['id']) {
@@ -59,7 +69,9 @@ export function CartContextProvider({ children }: CartContextProviderProps){
             value={{
                 cartState,
                 totalItemsPrice,
-                addOrUpdateItem,
+                addItem,
+                incrementItemsQuantity,
+                decrementItemsQuantity,
                 removeItem
             }}
         >

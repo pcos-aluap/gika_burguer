@@ -29,7 +29,7 @@ type AddMenuItemFromCardToCartFormInput = z.infer<typeof addMenuItemFromCardToCa
 
 export function MenuCard({ name, description, price, available, id }: MenuItemCardProps) {
     const { openModal } = useDetailsModal()
-    const { addOrUpdateItem, cartState } = useCart()
+    const { addItem, cartState } = useCart()
 
     const { control, setValue, getValues, handleSubmit } = useForm<AddMenuItemFromCardToCartFormInput>({
         resolver: zodResolver(addMenuItemFromCardToCartFormSchema),
@@ -74,7 +74,8 @@ export function MenuCard({ name, description, price, available, id }: MenuItemCa
     }
 
     const addItemTocart = () => {
-        addOrUpdateItem({
+        console.log(quantityOfItems)
+        addItem({ 
             menuItem: {
                 id: id,
                 image: "",
@@ -83,7 +84,7 @@ export function MenuCard({ name, description, price, available, id }: MenuItemCa
                 cost: price,
                 available: available
             },
-            quantity: quantityOfItems,
+            quantity: getValues('quantity'),
             foodPreferencies: ''
         })
 
